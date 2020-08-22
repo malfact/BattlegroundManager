@@ -1,0 +1,68 @@
+name: Bgmanager
+version: ${project.version}
+main: net.malfact.bgmanager.BgManager
+api-version: 1.16
+authors: [malfact]
+description: Allows the creation of Battlegrounds
+prefix: BGMGR
+permissions:
+   bgmanager.*:
+      default: op
+      children:
+         bgmanager.player.*: true
+         bgmanager.admin.*: true
+   bgmanager.player.*:
+      default: true
+      children:
+         bgmanager.player.queue: true
+         bgmanager.player.leave: true
+   bgmanager.admin.*:
+      default: false
+      children:
+         bgmanager.admin.create: true
+         bgmanager.admin.delete: true
+         bgmanager.admin.list: true
+         bgmanager.admin.edit: true
+         bgmanager.admin.setteamspawn: true
+commands:
+   queue:
+      description: Queue Command
+      aliases: bgqueue
+      usage: /queue <battleground name>
+      permission: bgmanager.player.queue
+   create:
+      description: Battleground Create Command
+      aliases: bgcreate
+      usage: /create <battleground name>
+      permission: bgmanager.admin.create
+   delete:
+      description: Battleground Delete Command
+      aliases: bgdelete
+      usage: /delete <battleground name>
+      permission: bgmanager.admin.delete
+   bglist:
+      description: Battleground List Command
+      usage: /list [battleground id]
+      permission: bgmanager.admin.list
+   edit:
+      description: Battleground Edit Command
+      aliases: bgedit
+      usage: /edit <battleground id> <value|doodad> [...]
+      permission: bgmanager.admin.edit
+   setteamspawn:
+      description: Set Battleground Team Spawn Command
+      aliases: bgsetteamspawn
+      usage: /setbgteamspawn <battleground id> <red|blue>
+      permission: bgmanager.admin.setteamspawn
+   leave:
+      description: Use to leave a battleground
+      usage: /leave
+      permission: bgmanager.player.leave
+   response:
+      description: Response Command
+      usage: /response <approve/deny>
+      permission: ""
+   test:
+      description: Test
+      usage: /test
+      permission: ""
