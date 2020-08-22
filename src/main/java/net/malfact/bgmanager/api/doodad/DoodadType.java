@@ -12,7 +12,6 @@ public class DoodadType {
 
     public static final DoodadType FLAG_SPAWN = registerDoodadType("FLAG_SPAWN", DoodadFlagSpawn.class);
     public static final DoodadType FLAG_CAPTURE = registerDoodadType("FLAG_CAPTURE", DoodadFlagCapture.class);
-    public static final DoodadType FLAG_STAND = registerDoodadType("FLAG_STAND", DoodadFlagStand.class);
     public static final DoodadType RADIAL_FIELD = registerDoodadType("RADIAL_FIELD", DoodadRadialField.class);
     public static final DoodadType GATE = registerDoodadType("GATE", DoodadGate.class);
     public static final DoodadType GRAVEYARD = registerDoodadType("GRAVEYARD", DoodadGraveyard.class);
@@ -43,7 +42,6 @@ public class DoodadType {
      * @return Resulting DoodadType, or null if not found
      */
     public static DoodadType getByName(String name){
-        System.out.println(name + ": "  + byName.get(name.toUpperCase()).toString());
         return byName.get(name.toUpperCase());
     }
 

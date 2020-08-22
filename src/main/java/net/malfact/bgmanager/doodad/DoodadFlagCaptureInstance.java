@@ -15,22 +15,19 @@ public class DoodadFlagCaptureInstance extends DoodadRadialFieldInstance impleme
 
     protected final TeamColor teamColor;
 
-    protected String ownerId = "";
-    protected boolean active = false;
+    // Used to set active state if paired with a DoodadFlagSpawn
+    protected final String flagId;
 
     protected DoodadFlagCaptureInstance(BattlegroundInstance battlegroundInstance, DoodadFlagCapture doodad) {
         super(battlegroundInstance, doodad);
         this.teamColor = doodad.teamColor;
 
+        this.flagId = doodad.getFlagId();
         BgManager.registerListener(this);
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public boolean getActive(){
-        return active;
+    public String getFlagId() {
+        return flagId;
     }
 
     @Override
@@ -67,13 +64,17 @@ public class DoodadFlagCaptureInstance extends DoodadRadialFieldInstance impleme
     public void onFlagSpawnEvent(FlagSpawnEvent event){
         if (event.getInstance() != this.getBattlegroundInstance()) return;
 
-        if (!event.isMobile() ){
-
+        if (!event.isMobile() && event.getFlagId().equals(flagId)){
+            this.active = true;
         }
     }
 
     @EventHandler
     public void onFlagDespawnEvent(FlagDespawnEvent event){
+        if (event.getInstance() != this.getBattlegroundInstance()) return;
 
+        if (!event.isMobile() && event.getFlagId().equals(flagId)){
+            this.active = false;
+        }
     }
 }
