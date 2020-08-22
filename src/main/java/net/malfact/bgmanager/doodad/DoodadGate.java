@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class DoodadGate extends DoodadBase {
+public class DoodadGate extends DoodadPhysicalBase {
 
     protected final Set<Location> gateBlocks;
 
@@ -55,15 +55,15 @@ public class DoodadGate extends DoodadBase {
     }
 
     public void addGateBlock(int x, int y, int z){
-        gateBlocks.add(new Location(parent.getWorld(), x, y, z));
+        gateBlocks.add(new Location(battleground.getWorld(), x, y, z));
     }
 
     public void removeGateBlock(int x, int y, int z){
-        gateBlocks.remove(new Location(parent.getWorld(), x, y, z));
+        gateBlocks.remove(new Location(battleground.getWorld(), x, y, z));
     }
 
     public boolean hasGateBlock(int x, int y, int z){
-        return gateBlocks.contains(new Location(parent.getWorld(), x, y, z));
+        return gateBlocks.contains(new Location(battleground.getWorld(), x, y, z));
     }
 
     @Override

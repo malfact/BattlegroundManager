@@ -1,6 +1,7 @@
 package net.malfact.bgmanager.battleground;
 
 import net.malfact.bgmanager.api.battleground.PlayerData;
+import net.malfact.bgmanager.api.battleground.TeamColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

@@ -1,6 +1,5 @@
 package net.malfact.bgmanager.api.battleground;
 
-import net.malfact.bgmanager.battleground.TeamColor;
 import org.bukkit.Location;
 
 public interface Team {

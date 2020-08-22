@@ -12,7 +12,7 @@ import org.bukkit.event.Listener;
 import java.util.HashSet;
 import java.util.Set;
 
-public class DoodadGateInstance extends DoodadBaseInstance implements Listener {
+public class DoodadGateInstance extends DoodadPhysicalBaseInstance implements Listener {
 
     protected final Set<Location> gateBlocks;
 

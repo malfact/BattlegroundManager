@@ -4,7 +4,7 @@ import net.malfact.bgmanager.BgManager;
 import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import net.malfact.bgmanager.api.battleground.BattlegroundStatus;
 import net.malfact.bgmanager.api.battleground.PlayerData;
-import net.malfact.bgmanager.battleground.TeamColor;
+import net.malfact.bgmanager.api.battleground.TeamColor;
 import net.malfact.bgmanager.event.FlagCaptureEvent;
 import net.malfact.bgmanager.event.FlagDespawnEvent;
 import net.malfact.bgmanager.event.FlagPickupEvent;
@@ -26,7 +26,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class DoodadFlagSpawnInstance extends DoodadBaseInstance implements Listener {
+public class DoodadFlagSpawnInstance extends DoodadPhysicalBaseInstance implements Listener {
 
     protected final TeamColor teamColor;
     protected final int respawnTime;

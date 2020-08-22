@@ -3,7 +3,7 @@ package net.malfact.bgmanager.doodad;
 import net.malfact.bgmanager.api.battleground.Battleground;
 import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import net.malfact.bgmanager.api.doodad.DoodadInstance;
-import net.malfact.bgmanager.battleground.TeamColor;
+import net.malfact.bgmanager.api.battleground.TeamColor;
 import net.malfact.bgmanager.command.edit.EditCommand;
 import net.querz.nbt.tag.CompoundTag;
 import org.bukkit.ChatColor;
@@ -17,7 +17,7 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 
-public class DoodadFlagSpawn extends DoodadBase {
+public class DoodadFlagSpawn extends DoodadPhysicalBase {
 
     protected TeamColor teamColor = TeamColor.RED;
     protected int respawnTime = 30;
@@ -74,7 +74,7 @@ public class DoodadFlagSpawn extends DoodadBase {
         if (flagStand == null || flagStand.isDead()) {
             Location l = getLocation();
 
-            ArmorStand armorStand = (ArmorStand) parent.getWorld()
+            ArmorStand armorStand = (ArmorStand) battleground.getWorld()
                     .spawnEntity(l.add(0.0, -1.75, 0.0), EntityType.ARMOR_STAND);
             armorStand.setCustomName("");
             armorStand.setCanPickupItems(false);

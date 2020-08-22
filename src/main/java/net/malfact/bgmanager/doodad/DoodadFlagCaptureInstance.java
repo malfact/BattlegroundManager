@@ -3,7 +3,7 @@ package net.malfact.bgmanager.doodad;
 import net.malfact.bgmanager.BgManager;
 import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import net.malfact.bgmanager.api.battleground.PlayerData;
-import net.malfact.bgmanager.battleground.TeamColor;
+import net.malfact.bgmanager.api.battleground.TeamColor;
 import net.malfact.bgmanager.event.FlagCaptureEvent;
 import net.malfact.bgmanager.event.FlagDespawnEvent;
 import net.malfact.bgmanager.event.FlagSpawnEvent;

@@ -89,13 +89,13 @@ public class DoodadBuff extends DoodadRadialField {
     public void debugTick() {
         super.debugTick();
         if (!debug) {
-            debug = parent.getDebug();
+            debug = battleground.getDebug();
             return;
         }
 
         if (location != null) {
             if (doodadDisplay == null || doodadDisplay.isDead()) {
-                doodadDisplay = (ArmorStand) parent.getWorld().spawnEntity(getLocation().add(0, -1.75, 0),
+                doodadDisplay = (ArmorStand) battleground.getWorld().spawnEntity(getLocation().add(0, -1.75, 0),
                         EntityType.ARMOR_STAND);
                 doodadDisplay.setCanPickupItems(false);
                 doodadDisplay.setGravity(false);

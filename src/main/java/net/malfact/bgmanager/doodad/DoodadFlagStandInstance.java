@@ -2,7 +2,7 @@ package net.malfact.bgmanager.doodad;
 
 import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 
-public class DoodadFlagStandInstance extends DoodadBaseInstance{
+public class DoodadFlagStandInstance extends DoodadPhysicalBaseInstance {
 
     protected final DoodadFlagCaptureInstance flagCaptureInstance;
     protected final DoodadFlagSpawnInstance flagSpawnInstance;

@@ -1,8 +1,9 @@
-package net.malfact.bgmanager.battleground;
+package net.malfact.bgmanager.api.battleground;
 
 public enum TeamColor {
     RED(org.bukkit.Color.RED, org.bukkit.ChatColor.RED),
-    BLUE(org.bukkit.Color.BLUE, org.bukkit.ChatColor.BLUE);
+    BLUE(org.bukkit.Color.BLUE, org.bukkit.ChatColor.BLUE),
+    GREEN(org.bukkit.Color.GREEN, org.bukkit.ChatColor.GREEN);
 
     public final org.bukkit.Color color;
     public final org.bukkit.ChatColor chatColor;

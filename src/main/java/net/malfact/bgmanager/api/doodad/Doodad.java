@@ -4,6 +4,9 @@ import net.malfact.bgmanager.api.NBTContainer;
 import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import org.bukkit.Location;
 
+/**
+ * Represents a Doodad in a Battleground
+ */
 public interface Doodad extends NBTContainer {
 
     /**

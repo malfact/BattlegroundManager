@@ -6,7 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
-public class DoodadRadialFieldInstance extends DoodadBaseInstance {
+public class DoodadRadialFieldInstance extends DoodadPhysicalBaseInstance {
 
     protected final double radius;
     protected final Color color;

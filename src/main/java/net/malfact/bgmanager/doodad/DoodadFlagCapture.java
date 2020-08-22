@@ -3,7 +3,7 @@ package net.malfact.bgmanager.doodad;
 import net.malfact.bgmanager.api.battleground.Battleground;
 import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import net.malfact.bgmanager.api.doodad.DoodadInstance;
-import net.malfact.bgmanager.battleground.TeamColor;
+import net.malfact.bgmanager.api.battleground.TeamColor;
 import net.malfact.bgmanager.command.edit.EditCommand;
 import net.querz.nbt.tag.CompoundTag;
 import org.bukkit.entity.Player;
@@ -41,7 +41,7 @@ public class DoodadFlagCapture extends DoodadRadialField {
         return super.readNBT(tag);
     }
 
-    @EditCommand(cmd ="setTeamColor", args = {TeamColor.class})
+    @EditCommand(cmd ="setTeamColor")
     public void setTeamColor(Player player, String[] args){
         if (args.length == 0) {
             player.sendMessage("<" + id + "> Team Color set to " + teamColor.chatColor + teamColor.toString());

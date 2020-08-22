@@ -2,6 +2,9 @@ package net.malfact.bgmanager.api.doodad;
 
 import org.bukkit.Location;
 
+/**
+ * Represents a Physical Doodad in a battleground
+ */
 public interface DoodadPhysical extends Doodad {
 
     /**

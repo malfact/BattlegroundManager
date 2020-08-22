@@ -2,15 +2,13 @@ package net.malfact.bgmanager.doodad;
 
 import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import net.malfact.bgmanager.api.doodad.DoodadInstance;
-import net.malfact.bgmanager.api.doodad.DoodadType;
-import net.malfact.bgmanager.battleground.TeamColor;
 import net.malfact.bgmanager.command.edit.EditCommand;
 import net.malfact.bgmanager.api.battleground.Battleground;
 import net.querz.nbt.tag.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-public class DoodadFlagStand extends DoodadBase {
+public class DoodadFlagStand extends DoodadPhysicalBase {
 
     protected DoodadFlagCapture flagCaptureDoodad;
     protected DoodadFlagSpawn flagSpawnDoodad;

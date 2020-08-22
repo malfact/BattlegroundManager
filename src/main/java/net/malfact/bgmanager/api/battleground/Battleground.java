@@ -1,7 +1,6 @@
 package net.malfact.bgmanager.api.battleground;
 
 import net.malfact.bgmanager.api.NBTContainer;
-import net.malfact.bgmanager.battleground.TeamColor;
 import net.malfact.bgmanager.api.doodad.Doodad;
 import net.malfact.bgmanager.api.doodad.DoodadType;
 import org.bukkit.World;

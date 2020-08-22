@@ -1,7 +1,7 @@
 package net.malfact.bgmanager.event;
 
 import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
-import net.malfact.bgmanager.battleground.TeamColor;
+import net.malfact.bgmanager.api.battleground.TeamColor;
 import org.bukkit.event.HandlerList;
 
 public class FlagDespawnEvent extends FlagEvent {

@@ -3,7 +3,7 @@ package net.malfact.bgmanager.doodad;
 import net.malfact.bgmanager.ProgressBar;
 import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import net.malfact.bgmanager.api.battleground.PlayerData;
-import net.malfact.bgmanager.battleground.TeamColor;
+import net.malfact.bgmanager.api.battleground.TeamColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;

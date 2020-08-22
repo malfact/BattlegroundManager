@@ -2,6 +2,7 @@ package net.malfact.bgmanager.battleground;
 
 import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import net.malfact.bgmanager.api.battleground.Team;
+import net.malfact.bgmanager.api.battleground.TeamColor;
 import net.malfact.bgmanager.api.battleground.TeamInstance;
 import org.bukkit.Location;
 
