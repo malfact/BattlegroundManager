@@ -5,14 +5,14 @@ import net.malfact.bgmanager.api.battleground.BattlegroundStatus;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class BattlegroundChangeStatusEvent extends Event {
+public class InstanceChangeStatusEvent extends Event {
 
     private static final HandlerList HANDLERS_LIST = new HandlerList();
 
     private final BattlegroundInstance battleground;
     private final BattlegroundStatus status;
 
-    public BattlegroundChangeStatusEvent(BattlegroundInstance battleground, BattlegroundStatus status){
+    public InstanceChangeStatusEvent(BattlegroundInstance battleground, BattlegroundStatus status){
         this.battleground = battleground;
         this.status = status;
     }

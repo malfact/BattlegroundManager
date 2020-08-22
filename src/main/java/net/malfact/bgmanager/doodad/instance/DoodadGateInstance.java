@@ -4,7 +4,7 @@ import net.malfact.bgmanager.BgManager;
 import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import net.malfact.bgmanager.api.battleground.BattlegroundStatus;
 import net.malfact.bgmanager.doodad.DoodadGate;
-import net.malfact.bgmanager.event.BattlegroundChangeStatusEvent;
+import net.malfact.bgmanager.event.InstanceChangeStatusEvent;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -37,7 +37,7 @@ public class DoodadGateInstance extends DoodadPhysicalInstance implements Listen
     }
 
     @EventHandler
-    public void onBattlegroundChangeStatus(BattlegroundChangeStatusEvent event){
+    public void onBattlegroundChangeStatus(InstanceChangeStatusEvent event){
         if (event.getBattleground() == this.instance && event.getStatus() == BattlegroundStatus.IN_PROGRESS){
             for (Location loc : gateBlocks){
                 loc.setWorld(instance.getWorld());

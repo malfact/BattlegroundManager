@@ -7,7 +7,7 @@ import net.malfact.bgmanager.api.battleground.*;
 import net.malfact.bgmanager.api.doodad.Doodad;
 import net.malfact.bgmanager.api.doodad.DoodadInstance;
 import net.malfact.bgmanager.doodad.instance.DoodadGraveyardInstance;
-import net.malfact.bgmanager.event.BattlegroundChangeStatusEvent;
+import net.malfact.bgmanager.event.InstanceChangeStatusEvent;
 import net.malfact.bgmanager.util.Config;
 import org.bukkit.*;
 import org.bukkit.boss.BarColor;
@@ -258,7 +258,7 @@ public class BattlegroundBaseInstance implements BattlegroundInstance, Listener 
 
     @Override
     public void setStatus(BattlegroundStatus status) {
-        Bukkit.getPluginManager().callEvent(new BattlegroundChangeStatusEvent(this, status));
+        Bukkit.getPluginManager().callEvent(new InstanceChangeStatusEvent(this, status));
 
         this.status = status;
         switch (status) {
