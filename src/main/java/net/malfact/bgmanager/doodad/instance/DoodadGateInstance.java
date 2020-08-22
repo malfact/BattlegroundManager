@@ -1,27 +1,27 @@
-package net.malfact.bgmanager.doodad;
+package net.malfact.bgmanager.doodad.instance;
 
 import net.malfact.bgmanager.BgManager;
 import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import net.malfact.bgmanager.api.battleground.BattlegroundStatus;
+import net.malfact.bgmanager.doodad.DoodadGate;
 import net.malfact.bgmanager.event.BattlegroundChangeStatusEvent;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class DoodadGateInstance extends DoodadPhysicalBaseInstance implements Listener {
+public class DoodadGateInstance extends DoodadPhysicalInstance implements Listener {
 
     protected final Set<Location> gateBlocks;
 
-    protected DoodadGateInstance(BattlegroundInstance battlegroundInstance, DoodadGate doodad) {
+    public DoodadGateInstance(BattlegroundInstance battlegroundInstance, DoodadGate doodad) {
         super(battlegroundInstance, doodad);
         gateBlocks = new HashSet<>();
-        for (Location l : doodad.gateBlocks){
-            gateBlocks.add(l.clone());
-        }
+        gateBlocks.addAll(Arrays.asList(doodad.getGateBlocks()));
 
         BgManager.registerListener(this);
     }
@@ -31,11 +31,16 @@ public class DoodadGateInstance extends DoodadPhysicalBaseInstance implements Li
         BgManager.unregisterListener(this);
     }
 
+    @Override
+    public void tick() {
+
+    }
+
     @EventHandler
     public void onBattlegroundChangeStatus(BattlegroundChangeStatusEvent event){
-        if (event.getBattleground() == this.battlegroundInstance && event.getStatus() == BattlegroundStatus.IN_PROGRESS){
+        if (event.getBattleground() == this.instance && event.getStatus() == BattlegroundStatus.IN_PROGRESS){
             for (Location loc : gateBlocks){
-                loc.setWorld(battlegroundInstance.getWorld());
+                loc.setWorld(instance.getWorld());
                 loc.getBlock().setType(Material.AIR);
             }
         }

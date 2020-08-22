@@ -1,9 +1,10 @@
-package net.malfact.bgmanager.doodad;
+package net.malfact.bgmanager.doodad.instance;
 
 import net.malfact.bgmanager.BgManager;
 import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import net.malfact.bgmanager.api.battleground.BattlegroundStatus;
 import net.malfact.bgmanager.api.battleground.PlayerData;
+import net.malfact.bgmanager.doodad.DoodadBuff;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
@@ -29,14 +30,14 @@ public class DoodadBuffInstance extends DoodadRadialFieldInstance implements Lis
     protected Material displayMaterial;
     protected ArmorStand doodadDisplay;
 
-    protected DoodadBuffInstance(BattlegroundInstance battlegroundInstance, DoodadBuff doodad) {
+    public DoodadBuffInstance(BattlegroundInstance battlegroundInstance, DoodadBuff doodad) {
         super(battlegroundInstance, doodad);
-        this.effectType = doodad.effectType;
-        this.effectDuration = doodad.effectDuration;
-        this.effectStrength = doodad.effectStrength;
-        this.respawnTime = doodad.respawnTime;
+        this.effectType = doodad.getEffectType();
+        this.effectDuration = doodad.getEffectDuration();
+        this.effectStrength = doodad.getEffectStrength();
+        this.respawnTime = doodad.getRespawnTime();
 
-        this.displayMaterial = doodad.displayMaterial;
+        this.displayMaterial = doodad.getDisplayMaterial();
 
         BgManager.registerListener(this);
     }
@@ -55,7 +56,7 @@ public class DoodadBuffInstance extends DoodadRadialFieldInstance implements Lis
         if (effectType == null)
             return;
 
-        if (battlegroundInstance.getStatus() == BattlegroundStatus.IN_PROGRESS){
+        if (instance.getStatus() == BattlegroundStatus.IN_PROGRESS){
             if (!buffSpawned){
                 if (isDisplaySpawned())
                     despawnDisplay();
@@ -76,7 +77,7 @@ public class DoodadBuffInstance extends DoodadRadialFieldInstance implements Lis
                 loc.setYaw(displayTimer);
                 doodadDisplay.teleport(loc);
 
-                for (PlayerData playerData : battlegroundInstance.getPlayerData()) {
+                for (PlayerData playerData : instance.getPlayerData()) {
                     if (isPlayerInRadius(playerData.getPlayer())) {
                         playerData.getPlayer().addPotionEffect(
                                 new PotionEffect(effectType, effectDuration*20 + 20, effectStrength)
@@ -93,7 +94,7 @@ public class DoodadBuffInstance extends DoodadRadialFieldInstance implements Lis
     protected void spawnDisplay(){
         despawnDisplay();
 
-        doodadDisplay = (ArmorStand) battlegroundInstance.getWorld().spawnEntity(
+        doodadDisplay = (ArmorStand) instance.getWorld().spawnEntity(
                 location.clone().add(0, -1.75, 0), EntityType.ARMOR_STAND);
         doodadDisplay.setCanPickupItems(false);
         doodadDisplay.setGravity(false);

@@ -5,13 +5,14 @@ import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import net.malfact.bgmanager.api.doodad.DoodadInstance;
 import net.malfact.bgmanager.api.battleground.TeamColor;
 import net.malfact.bgmanager.command.edit.EditCommand;
+import net.malfact.bgmanager.doodad.instance.DoodadGraveyardInstance;
 import net.querz.nbt.tag.CompoundTag;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 
-public class DoodadGraveyard extends DoodadRadialField{
+public class DoodadGraveyard extends DoodadRadialField {
 
     protected TeamColor teamColor = TeamColor.RED;
     protected int respawnTime = 0;
@@ -28,11 +29,19 @@ public class DoodadGraveyard extends DoodadRadialField{
         }
     }
 
+    public TeamColor getTeamColor() {
+        return teamColor;
+    }
+
     public void setRespawnTime(int respawnTime) {
         this.respawnTime = respawnTime;
         if (doodadInteractor != null){
             doodadInteractor.setCustomName(teamColor.chatColor + "<GY " + respawnTime + "> " + id);
         }
+    }
+
+    public int getRespawnTime() {
+        return respawnTime;
     }
 
     @Override

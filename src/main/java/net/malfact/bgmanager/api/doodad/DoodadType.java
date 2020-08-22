@@ -17,6 +17,8 @@ public class DoodadType {
     public static final DoodadType GRAVEYARD = registerDoodadType("GRAVEYARD", DoodadGraveyard.class);
     public static final DoodadType BUFF = registerDoodadType("BUFF", DoodadBuff.class);
 
+    public static final DoodadType GROUP = registerDoodadType("GROUP", DoodadGroupBase.class);
+
     /**
      * Register a new DoodadType with the given name and class
      * @param name Name to register

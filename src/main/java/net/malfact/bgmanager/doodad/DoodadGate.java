@@ -3,6 +3,7 @@ package net.malfact.bgmanager.doodad;
 import net.malfact.bgmanager.api.battleground.Battleground;
 import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import net.malfact.bgmanager.api.doodad.DoodadInstance;
+import net.malfact.bgmanager.doodad.instance.DoodadGateInstance;
 import net.malfact.bgmanager.util.Config;
 import net.querz.nbt.tag.CompoundTag;
 import net.querz.nbt.tag.ListTag;
@@ -24,6 +25,16 @@ public class DoodadGate extends DoodadPhysicalBase {
     public DoodadGate(String id, Battleground parent) {
         super(id, parent);
         gateBlocks = new HashSet<>();
+    }
+
+    public Location[] getGateBlocks() {
+        Location[] gateBlocks = new Location[this.gateBlocks.size()];
+        int count = 0;
+        for (Location location : this.gateBlocks){
+            gateBlocks[count] = location.clone();
+            count++;
+        }
+        return gateBlocks;
     }
 
     @Override

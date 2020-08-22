@@ -1,6 +1,7 @@
 package net.malfact.bgmanager.api.doodad;
 
 import net.malfact.bgmanager.api.NBTContainer;
+import net.malfact.bgmanager.api.battleground.Battleground;
 import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import org.bukkit.Location;
 
@@ -15,6 +16,13 @@ public interface Doodad extends NBTContainer {
      * @return Id of doodad
      */
     String getId();
+
+    /**
+     * Get the Battleground of this doodad
+     *
+     * @return Battleground of doodad
+     */
+    Battleground getBattleground();
 
     /**
      * Set the debug value of this dooad

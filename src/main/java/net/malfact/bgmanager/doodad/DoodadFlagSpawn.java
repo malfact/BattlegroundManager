@@ -5,6 +5,7 @@ import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import net.malfact.bgmanager.api.doodad.DoodadInstance;
 import net.malfact.bgmanager.api.battleground.TeamColor;
 import net.malfact.bgmanager.command.edit.EditCommand;
+import net.malfact.bgmanager.doodad.instance.DoodadFlagSpawnInstance;
 import net.querz.nbt.tag.CompoundTag;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -17,9 +18,8 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 
-public class DoodadFlagSpawn extends DoodadPhysicalBase {
+public class DoodadFlagSpawn extends DoodadPhysicalOwnableBase {
 
-    protected TeamColor teamColor = TeamColor.RED;
     protected int respawnTime = 30;
 
     protected ArmorStand flagStand;
@@ -32,11 +32,23 @@ public class DoodadFlagSpawn extends DoodadPhysicalBase {
         this.respawnTime = respawnTime;
     }
 
+    public int getRespawnTime() {
+        return respawnTime;
+    }
+
+    public void setTeamColor(TeamColor teamColor){
+        super.setTeamColor(teamColor);
+
+        refreshBanner();
+    }
+
     @Override
     public void destroy() {
         super.destroy();
-        if (flagStand != null)
+        if (flagStand != null){
             flagStand.remove();
+            flagStand = null;
+        }
     }
 
     @Override
@@ -45,18 +57,6 @@ public class DoodadFlagSpawn extends DoodadPhysicalBase {
 
         if (flagStand != null)
             flagStand.teleport(getLocation().add(0.0, -1.75, 0.0));
-    }
-
-    public void setTeamColor(TeamColor teamColor){
-        this.teamColor = teamColor;
-
-        if (flagStand != null){
-            EntityEquipment equipment = flagStand.getEquipment();
-            if (teamColor == TeamColor.RED)
-                equipment.setHelmet(new ItemStack(Material.RED_BANNER));
-            else
-                equipment.setHelmet(new ItemStack(Material.BLUE_BANNER));
-        }
     }
 
     @Override
@@ -85,38 +85,34 @@ public class DoodadFlagSpawn extends DoodadPhysicalBase {
 
             flagStand = armorStand;
 
-            EntityEquipment equipment = flagStand.getEquipment();
-            if (teamColor == TeamColor.RED)
-                equipment.setHelmet(new ItemStack(Material.RED_BANNER));
-            else
-                equipment.setHelmet(new ItemStack(Material.BLUE_BANNER));
+            refreshBanner();
         }
+    }
+
+    private void refreshBanner(){
+        if (flagStand == null) return;
+
+        EntityEquipment equipment = flagStand.getEquipment();
+        if (teamColor == TeamColor.RED)
+            equipment.setHelmet(new ItemStack(Material.RED_BANNER));
+        else if (teamColor == TeamColor.BLUE)
+            equipment.setHelmet(new ItemStack(Material.BLUE_BANNER));
+        else if (teamColor == TeamColor.GREEN)
+            equipment.setHelmet(new ItemStack(Material.GREEN_BANNER));
+        else
+            equipment.setHelmet(new ItemStack(Material.WHITE_BANNER));
     }
 
     @Override
     public CompoundTag writeNBT(CompoundTag tag) {
-        tag.putString("color", teamColor.toString());
         tag.putInt("respawnTime", respawnTime);
         return super.writeNBT(tag);
     }
 
     @Override
     public CompoundTag readNBT(CompoundTag tag) {
-        teamColor = TeamColor.valueOf(tag.getString("color"));
         respawnTime = tag.getInt("respawnTime");
         return super.readNBT(tag);
-    }
-
-    @EditCommand(cmd ="setTeamColor")
-    public void setTeamColor(Player player, String[] args){
-        if (args.length == 0) {
-            player.sendMessage("<" + id + "> Team Color is set to " + teamColor.chatColor + teamColor.toString());
-            return;
-        }
-
-        TeamColor color = TeamColor.valueOf(args[0]);
-        player.sendMessage("<" + id + "> Team Color set to " + teamColor.chatColor + teamColor.toString());
-        setTeamColor(color);
     }
 
     @EditCommand(cmd = "setRespawnTime")
@@ -142,7 +138,6 @@ public class DoodadFlagSpawn extends DoodadPhysicalBase {
 
         if (event.getRightClicked() == doodadInteractor && event.getPlayer().isSneaking()){
             event.setCancelled(true);
-            event.getPlayer().sendMessage("<" + id + "> Team Color is set to " + teamColor.chatColor + teamColor.toString());
             event.getPlayer().sendMessage(ChatColor.GOLD + "Respawn Time is set to " + ChatColor.AQUA + respawnTime);
         }
     }

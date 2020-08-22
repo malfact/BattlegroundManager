@@ -5,6 +5,7 @@ import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import net.malfact.bgmanager.api.doodad.DoodadInstance;
 import net.malfact.bgmanager.api.battleground.TeamColor;
 import net.malfact.bgmanager.command.edit.EditCommand;
+import net.malfact.bgmanager.doodad.instance.DoodadFlagCaptureInstance;
 import net.querz.nbt.tag.CompoundTag;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -30,6 +31,10 @@ public class DoodadFlagCapture extends DoodadRadialField {
     public void setTeamColor(TeamColor teamColor){
         this.teamColor = teamColor;
         this.color = teamColor.color;
+    }
+
+    public TeamColor getTeamColor() {
+        return teamColor;
     }
 
     @Override

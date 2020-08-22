@@ -1,9 +1,10 @@
-package net.malfact.bgmanager.doodad;
+package net.malfact.bgmanager.doodad.instance;
 
 import net.malfact.bgmanager.ProgressBar;
 import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import net.malfact.bgmanager.api.battleground.PlayerData;
 import net.malfact.bgmanager.api.battleground.TeamColor;
+import net.malfact.bgmanager.doodad.DoodadGraveyard;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -19,10 +20,10 @@ public class DoodadGraveyardInstance extends DoodadRadialFieldInstance {
 
     protected final ProgressBar timerBar;
 
-    protected DoodadGraveyardInstance(BattlegroundInstance battlegroundInstance, DoodadGraveyard doodad) {
+    public DoodadGraveyardInstance(BattlegroundInstance battlegroundInstance, DoodadGraveyard doodad) {
         super(battlegroundInstance, doodad);
-        this.teamColor = doodad.teamColor;
-        this.respawnTime = doodad.respawnTime;
+        this.teamColor = doodad.getTeamColor();
+        this.respawnTime = doodad.getRespawnTime();
         this.timerBar = new ProgressBar("Graveyard", BarColor.YELLOW, BarStyle.SOLID, ProgressBar.TitleFlag.TIME);
         this.timerBar.setMaxValue(respawnTime);
 
@@ -49,7 +50,7 @@ public class DoodadGraveyardInstance extends DoodadRadialFieldInstance {
 
         timerBar.setCurrentValue(timer/20);
 
-        for (PlayerData playerData : battlegroundInstance.getPlayerData()){
+        for (PlayerData playerData : instance.getPlayerData()){
             if (playerData.isDead()){
                 double inc = (Math.PI / (radius * 10));
                 for (double i = 0; i < Math.PI * 2; i += inc) {
@@ -73,7 +74,7 @@ public class DoodadGraveyardInstance extends DoodadRadialFieldInstance {
         if (timer <= 0){
             timer = respawnTime*20;
 
-            for (PlayerData playerData : battlegroundInstance.getPlayerData()){
+            for (PlayerData playerData : instance.getPlayerData()){
                 if (playerData.isDead()
                         && playerData.getTeam() == teamColor
                         && isPlayerInRadius(playerData.getPlayer())) {
@@ -86,7 +87,7 @@ public class DoodadGraveyardInstance extends DoodadRadialFieldInstance {
     }
 
     public boolean canPlayerSpawn(Player player){
-        PlayerData playerData = battlegroundInstance.getPlayerData(player);
+        PlayerData playerData = instance.getPlayerData(player);
 
         if (playerData == null)
             return false;

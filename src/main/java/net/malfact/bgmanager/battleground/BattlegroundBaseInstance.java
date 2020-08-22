@@ -6,7 +6,7 @@ import net.malfact.bgmanager.WorldManager;
 import net.malfact.bgmanager.api.battleground.*;
 import net.malfact.bgmanager.api.doodad.Doodad;
 import net.malfact.bgmanager.api.doodad.DoodadInstance;
-import net.malfact.bgmanager.doodad.DoodadGraveyardInstance;
+import net.malfact.bgmanager.doodad.instance.DoodadGraveyardInstance;
 import net.malfact.bgmanager.event.BattlegroundChangeStatusEvent;
 import net.malfact.bgmanager.util.Config;
 import org.bukkit.*;

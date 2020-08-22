@@ -3,7 +3,6 @@ package net.malfact.bgmanager.doodad;
 import net.malfact.bgmanager.BgManager;
 import net.malfact.bgmanager.api.battleground.Battleground;
 import net.malfact.bgmanager.api.doodad.DoodadPhysical;
-import net.malfact.bgmanager.api.doodad.DoodadType;
 import net.malfact.bgmanager.command.edit.EditCommand;
 import net.querz.nbt.tag.CompoundTag;
 import org.bukkit.ChatColor;
@@ -16,9 +15,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 
 public abstract class DoodadPhysicalBase extends DoodadBase implements DoodadPhysical, Listener {
-    protected Location location;
-    protected boolean debug = false;
 
+    protected Location location;
     protected ArmorStand doodadInteractor;
 
     public DoodadPhysicalBase(String id, Battleground battleground){
@@ -27,9 +25,28 @@ public abstract class DoodadPhysicalBase extends DoodadBase implements DoodadPhy
         BgManager.registerListener(this);
     }
 
-    @Override
-    public String getId() {
-        return id;
+    protected void spawnInteractor(){
+        despawnInteractor();
+
+        doodadInteractor = (ArmorStand) battleground.getWorld().spawnEntity(getLocation(), EntityType.ARMOR_STAND);
+        doodadInteractor.setCustomName("<" + id + ">");
+        doodadInteractor.setCustomNameVisible(true);
+        doodadInteractor.setCanPickupItems(false);
+        doodadInteractor.setGravity(false);
+        doodadInteractor.setInvulnerable(true);
+        doodadInteractor.setVisible(true);
+        doodadInteractor.setBasePlate(false);
+    }
+
+    protected void despawnInteractor(){
+        if (doodadInteractor != null){
+            doodadInteractor.remove();
+            doodadInteractor = null;
+        }
+    }
+
+    protected boolean isInteractorSpawned(){
+        return doodadInteractor != null && !doodadInteractor.isDead();
     }
 
     @Override
@@ -44,13 +61,6 @@ public abstract class DoodadPhysicalBase extends DoodadBase implements DoodadPhy
         location.setYaw(yaw);
         location.setPitch(0F);
         this.location = location;
-    }
-
-    @Override
-    public void setDebug(boolean debug) {
-        this.debug = debug;
-        if (!debug)
-            destroy();
     }
 
     @Override
@@ -83,8 +93,6 @@ public abstract class DoodadPhysicalBase extends DoodadBase implements DoodadPhy
 
     @Override
     public CompoundTag writeNBT(CompoundTag tag){
-        tag.putString("doodad_type", DoodadType.getByClass(this.getClass()).getName());
-
         Location location = getLocation();
 
         if (location != null) {
@@ -96,7 +104,7 @@ public abstract class DoodadPhysicalBase extends DoodadBase implements DoodadPhy
             tag.put("location", locationTag);
         }
 
-        return tag;
+        return super.writeNBT(tag);
     }
 
     @Override
@@ -114,31 +122,7 @@ public abstract class DoodadPhysicalBase extends DoodadBase implements DoodadPhy
                     ));
         }
 
-        return tag;
-    }
-
-    protected void spawnInteractor(){
-        despawnInteractor();
-
-        doodadInteractor = (ArmorStand) battleground.getWorld().spawnEntity(getLocation(), EntityType.ARMOR_STAND);
-        doodadInteractor.setCustomName("<" + id + ">");
-        doodadInteractor.setCustomNameVisible(true);
-        doodadInteractor.setCanPickupItems(false);
-        doodadInteractor.setGravity(false);
-        doodadInteractor.setInvulnerable(true);
-        doodadInteractor.setVisible(true);
-        doodadInteractor.setBasePlate(false);
-    }
-
-    protected void despawnInteractor(){
-        if (doodadInteractor != null){
-            doodadInteractor.remove();
-            doodadInteractor = null;
-        }
-    }
-
-    protected boolean isInteractorSpawned(){
-        return doodadInteractor != null && !doodadInteractor.isDead();
+        return super.readNBT(tag);
     }
 
     @EditCommand(cmd ="setLocation")

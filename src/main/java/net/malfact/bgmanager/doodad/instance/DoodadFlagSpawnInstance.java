@@ -1,10 +1,11 @@
-package net.malfact.bgmanager.doodad;
+package net.malfact.bgmanager.doodad.instance;
 
 import net.malfact.bgmanager.BgManager;
 import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import net.malfact.bgmanager.api.battleground.BattlegroundStatus;
 import net.malfact.bgmanager.api.battleground.PlayerData;
 import net.malfact.bgmanager.api.battleground.TeamColor;
+import net.malfact.bgmanager.doodad.DoodadFlagSpawn;
 import net.malfact.bgmanager.event.FlagCaptureEvent;
 import net.malfact.bgmanager.event.FlagDespawnEvent;
 import net.malfact.bgmanager.event.FlagPickupEvent;
@@ -26,7 +27,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class DoodadFlagSpawnInstance extends DoodadPhysicalBaseInstance implements Listener {
+public class DoodadFlagSpawnInstance extends DoodadPhysicalInstance implements Listener {
 
     protected final TeamColor teamColor;
     protected final int respawnTime;
@@ -47,10 +48,10 @@ public class DoodadFlagSpawnInstance extends DoodadPhysicalBaseInstance implemen
     protected int mobileTimer = 0;
     protected int timer = 0;
 
-    protected DoodadFlagSpawnInstance(BattlegroundInstance battlegroundInstance, DoodadFlagSpawn doodad) {
+    public DoodadFlagSpawnInstance(BattlegroundInstance battlegroundInstance, DoodadFlagSpawn doodad) {
         super(battlegroundInstance, doodad);
-        this.teamColor = doodad.teamColor;
-        this.respawnTime = doodad.respawnTime;
+        this.teamColor = doodad.getTeamColor();
+        this.respawnTime = doodad.getRespawnTime();
 
         BgManager.registerListener(this);
     }
@@ -67,16 +68,16 @@ public class DoodadFlagSpawnInstance extends DoodadPhysicalBaseInstance implemen
 
     @Override
     public void tick() {
-        if (battlegroundInstance.getStatus() != BattlegroundStatus.IN_PROGRESS){
+        if (instance.getStatus() != BattlegroundStatus.IN_PROGRESS){
             if (flagSpawned)
                 despawnFlag();
 
             respawnTimer = respawnTime*20;
         }
 
-        if (battlegroundInstance.getStatus() == BattlegroundStatus.IN_PROGRESS) {
+        if (instance.getStatus() == BattlegroundStatus.IN_PROGRESS) {
             if (!flagSpawned && !flagCaptured && !flagMobile && respawnTimer <= 0) {
-                battlegroundInstance.broadcast("The " + teamColor.toString() + " Team's flag has spawned!");
+                instance.broadcast("The " + teamColor.toString() + " Team's flag has spawned!");
                 respawnTimer = respawnTime*20;
                 spawnFlag();
 
@@ -90,7 +91,7 @@ public class DoodadFlagSpawnInstance extends DoodadPhysicalBaseInstance implemen
 
             if (flagHolder != null){
                 if (!flagHolder.getPlayer().isOnline()){
-                    battlegroundInstance.broadcast("The " + teamColor.chatColor
+                    instance.broadcast("The " + teamColor.chatColor
                             + "Team's flag has been returned to it's base!");
 
                     flagHolder.setFlag(null, "");
@@ -104,7 +105,7 @@ public class DoodadFlagSpawnInstance extends DoodadPhysicalBaseInstance implemen
                     timer = timer < 20 ? timer + 1 : 0;
                     double angle = (Math.PI / 10) * timer;
 
-                    getBattlegroundInstance().getWorld().spawnParticle(
+                    getInstance().getWorld().spawnParticle(
                             Particle.REDSTONE,
                             loc.add(0.75 * Math.sin(angle), 2.0, 0.75 * Math.cos(angle)),
                             1,
@@ -129,7 +130,7 @@ public class DoodadFlagSpawnInstance extends DoodadPhysicalBaseInstance implemen
                     mobileFlagInteractor.setCustomName(mobileTimer/20 + "");
 
                     if (mobileTimer <= 0){
-                        battlegroundInstance.broadcast("The " + teamColor.toString()
+                        instance.broadcast("The " + teamColor.toString()
                                 + "Team's flag has been returned to it's base!");
                         despawnMobileFlag();
                         spawnFlag();
@@ -156,7 +157,7 @@ public class DoodadFlagSpawnInstance extends DoodadPhysicalBaseInstance implemen
         despawnFlag();
         Location loc0 = location.clone();
 
-        flagInteractor = (ArmorStand) battlegroundInstance.getWorld().spawnEntity(loc0, EntityType.ARMOR_STAND);
+        flagInteractor = (ArmorStand) instance.getWorld().spawnEntity(loc0, EntityType.ARMOR_STAND);
         flagInteractor.setCustomName("Flag Holder");
         flagInteractor.setCanPickupItems(false);
         flagInteractor.setGravity(false);
@@ -166,7 +167,7 @@ public class DoodadFlagSpawnInstance extends DoodadPhysicalBaseInstance implemen
 
         Location loc1 = location.clone();
 
-        flagDisplay = (ArmorStand) battlegroundInstance.getWorld().spawnEntity(loc1.add(0.0, -1.75, 0.0),
+        flagDisplay = (ArmorStand) instance.getWorld().spawnEntity(loc1.add(0.0, -1.75, 0.0),
                 EntityType.ARMOR_STAND);
         flagDisplay.setCustomName("");
         flagDisplay.setCanPickupItems(false);
@@ -185,7 +186,7 @@ public class DoodadFlagSpawnInstance extends DoodadPhysicalBaseInstance implemen
         respawnTimer = respawnTime*20;
         flagHoldTime = 0;
 
-        Bukkit.getPluginManager().callEvent(new FlagSpawnEvent(this.teamColor, this.id, battlegroundInstance, false));
+        Bukkit.getPluginManager().callEvent(new FlagSpawnEvent(this.teamColor, this.id, instance, false));
     }
 
     private void despawnFlag(){
@@ -202,7 +203,7 @@ public class DoodadFlagSpawnInstance extends DoodadPhysicalBaseInstance implemen
 
         flagSpawned = false;
 
-        Bukkit.getPluginManager().callEvent(new FlagDespawnEvent(this.teamColor, this.id, battlegroundInstance, false));
+        Bukkit.getPluginManager().callEvent(new FlagDespawnEvent(this.teamColor, this.id, instance, false));
     }
 
     private boolean isFlagDisplaySpawned(){
@@ -212,7 +213,7 @@ public class DoodadFlagSpawnInstance extends DoodadPhysicalBaseInstance implemen
     private void spawnMobileFlag(Location location){
         despawnMobileFlag();
 
-        mobileFlagDisplay = (ArmorStand) battlegroundInstance.getWorld()
+        mobileFlagDisplay = (ArmorStand) instance.getWorld()
                 .spawnEntity(location.clone().add(0.0, -1.75, 0.0), EntityType.ARMOR_STAND);
         mobileFlagDisplay.setCustomName("Flag Holder");
         mobileFlagDisplay.setCanPickupItems(false);
@@ -221,7 +222,7 @@ public class DoodadFlagSpawnInstance extends DoodadPhysicalBaseInstance implemen
         mobileFlagDisplay.setInvulnerable(true);
         mobileFlagDisplay.setVisible(false);
 
-        mobileFlagInteractor = (ArmorStand) battlegroundInstance.getWorld()
+        mobileFlagInteractor = (ArmorStand) instance.getWorld()
                 .spawnEntity(location.clone(), EntityType.ARMOR_STAND);
         mobileFlagInteractor.setCustomName("");
         mobileFlagInteractor.setCustomNameVisible(true);
@@ -240,7 +241,7 @@ public class DoodadFlagSpawnInstance extends DoodadPhysicalBaseInstance implemen
         mobileTimer = 200;
         flagMobile = true;
 
-        Bukkit.getPluginManager().callEvent(new FlagSpawnEvent(this.teamColor, this.id, battlegroundInstance,true));
+        Bukkit.getPluginManager().callEvent(new FlagSpawnEvent(this.teamColor, this.id, instance,true));
     }
 
     private void despawnMobileFlag(){
@@ -256,7 +257,7 @@ public class DoodadFlagSpawnInstance extends DoodadPhysicalBaseInstance implemen
 
         flagMobile = false;
 
-        Bukkit.getPluginManager().callEvent(new FlagDespawnEvent(this.teamColor, this.id, battlegroundInstance, true));
+        Bukkit.getPluginManager().callEvent(new FlagDespawnEvent(this.teamColor, this.id, instance, true));
     }
 
     private boolean isFlagMobileDisplaySpawned(){
@@ -274,7 +275,7 @@ public class DoodadFlagSpawnInstance extends DoodadPhysicalBaseInstance implemen
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event){
-        if (!battlegroundInstance.isPlayerInBattleground(event.getPlayer()))
+        if (!instance.isPlayerInBattleground(event.getPlayer()))
             return;
 
         if (flagHolder == null || event.getHand() == EquipmentSlot.OFF_HAND
@@ -284,7 +285,7 @@ public class DoodadFlagSpawnInstance extends DoodadPhysicalBaseInstance implemen
         if (event.getPlayer().isSneaking()
                 && (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK)){
 
-            battlegroundInstance.broadcast(flagHolder.getTeam().chatColor
+            instance.broadcast(flagHolder.getTeam().chatColor
                     + flagHolder.getPlayer().getName() + " has dropped the " + teamColor + " Team's flag!");
 
             flagHolder.setFlag(null, "");
@@ -295,7 +296,7 @@ public class DoodadFlagSpawnInstance extends DoodadPhysicalBaseInstance implemen
             if (dropLocation != null)
                 spawnMobileFlag(dropLocation);
             else {
-                battlegroundInstance.broadcast("The " + teamColor.chatColor
+                instance.broadcast("The " + teamColor.chatColor
                         + "Team's flag has been returned to it's base!");
                 spawnFlag();
             }
@@ -304,16 +305,16 @@ public class DoodadFlagSpawnInstance extends DoodadPhysicalBaseInstance implemen
 
     @EventHandler
     public void onPlayerInteractAtEntityEvent(PlayerInteractAtEntityEvent event) {
-        if (!battlegroundInstance.isPlayerInBattleground(event.getPlayer()))
+        if (!instance.isPlayerInBattleground(event.getPlayer()))
             return;
 
-        if (battlegroundInstance.getStatus() != BattlegroundStatus.IN_PROGRESS)
+        if (instance.getStatus() != BattlegroundStatus.IN_PROGRESS)
             return;
 
         Player player = event.getPlayer();
         Entity entity = event.getRightClicked();
 
-        PlayerData playerData = battlegroundInstance.getPlayerData(player);
+        PlayerData playerData = instance.getPlayerData(player);
 
         if (playerData.isDead())
             return;
@@ -327,11 +328,11 @@ public class DoodadFlagSpawnInstance extends DoodadPhysicalBaseInstance implemen
                 flagHolder = playerData;
                 despawnFlag();
 
-                battlegroundInstance.broadcast(playerData.getTeam().chatColor  + player.getDisplayName()
+                instance.broadcast(playerData.getTeam().chatColor  + player.getDisplayName()
                         + " has picked up the " + teamColor.toString() + " Team's flag!");
                 event.getPlayer().sendMessage(ChatColor.GOLD + ">> [Sneak] + [Left Click] to drop the flag!");
 
-                Bukkit.getPluginManager().callEvent(new FlagPickupEvent(this.teamColor, id, battlegroundInstance, player, playerData.getTeam()));
+                Bukkit.getPluginManager().callEvent(new FlagPickupEvent(this.teamColor, id, instance, player, playerData.getTeam()));
             }
         } else if (entity == mobileFlagInteractor || entity == mobileFlagDisplay){
             event.setCancelled(true);
@@ -340,7 +341,7 @@ public class DoodadFlagSpawnInstance extends DoodadPhysicalBaseInstance implemen
                 despawnMobileFlag();
                 spawnFlag();
 
-                battlegroundInstance.broadcast(playerData.getTeam().chatColor + player.getDisplayName()
+                instance.broadcast(playerData.getTeam().chatColor + player.getDisplayName()
                         + " has returned their flag to their base!");
 
             } else {
@@ -349,24 +350,24 @@ public class DoodadFlagSpawnInstance extends DoodadPhysicalBaseInstance implemen
                 flagHolder = playerData;
                 despawnMobileFlag();
 
-                battlegroundInstance.broadcast(playerData.getTeam().chatColor +player.getDisplayName()
+                instance.broadcast(playerData.getTeam().chatColor +player.getDisplayName()
                         + " has picked up the " + teamColor.toString() + " Team's flag!");
                 event.getPlayer().sendMessage(ChatColor.GOLD + ">> [Sneak] + [Left Click] to drop the flag!");
 
-                Bukkit.getPluginManager().callEvent(new FlagPickupEvent(this.teamColor, id, battlegroundInstance, player, playerData.getTeam()));
+                Bukkit.getPluginManager().callEvent(new FlagPickupEvent(this.teamColor, id, instance, player, playerData.getTeam()));
             }
         }
     }
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event){
-        if (flagHolder == null || !battlegroundInstance.isPlayerInBattleground(event.getEntity()))
+        if (flagHolder == null || !instance.isPlayerInBattleground(event.getEntity()))
             return;
 
-        PlayerData playerData = battlegroundInstance.getPlayerData(event.getEntity());
+        PlayerData playerData = instance.getPlayerData(event.getEntity());
 
         if (flagHolder == playerData){
-            battlegroundInstance.broadcast(flagHolder.getTeam().chatColor
+            instance.broadcast(flagHolder.getTeam().chatColor
                     + flagHolder.getPlayer().getName() + " has dropped the " + teamColor + " Team's flag!");
 
             Location dropLocation = getFirstSolidBlock(flagHolder.getPlayer().getLocation());
@@ -377,7 +378,7 @@ public class DoodadFlagSpawnInstance extends DoodadPhysicalBaseInstance implemen
             if (dropLocation != null){
                 spawnMobileFlag(dropLocation);
             } else {
-                battlegroundInstance.broadcast("The " + teamColor.chatColor
+                instance.broadcast("The " + teamColor.chatColor
                         + "Team's flag has been returned to it's base!");
                 spawnFlag();
             }

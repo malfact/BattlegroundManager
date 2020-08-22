@@ -1,9 +1,10 @@
-package net.malfact.bgmanager.doodad;
+package net.malfact.bgmanager.doodad.instance;
 
 import net.malfact.bgmanager.BgManager;
 import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import net.malfact.bgmanager.api.battleground.PlayerData;
 import net.malfact.bgmanager.api.battleground.TeamColor;
+import net.malfact.bgmanager.doodad.DoodadFlagCapture;
 import net.malfact.bgmanager.event.FlagCaptureEvent;
 import net.malfact.bgmanager.event.FlagDespawnEvent;
 import net.malfact.bgmanager.event.FlagSpawnEvent;
@@ -18,9 +19,9 @@ public class DoodadFlagCaptureInstance extends DoodadRadialFieldInstance impleme
     // Used to set active state if paired with a DoodadFlagSpawn
     protected final String flagId;
 
-    protected DoodadFlagCaptureInstance(BattlegroundInstance battlegroundInstance, DoodadFlagCapture doodad) {
+    public DoodadFlagCaptureInstance(BattlegroundInstance battlegroundInstance, DoodadFlagCapture doodad) {
         super(battlegroundInstance, doodad);
-        this.teamColor = doodad.teamColor;
+        this.teamColor = doodad.getTeamColor();
 
         this.flagId = doodad.getFlagId();
         BgManager.registerListener(this);
@@ -41,16 +42,16 @@ public class DoodadFlagCaptureInstance extends DoodadRadialFieldInstance impleme
         super.tick();
 
         if (active) {
-            for (PlayerData playerData : battlegroundInstance.getPlayerData()){
+            for (PlayerData playerData : instance.getPlayerData()){
                 if (playerData.getPlayer().getLocation().distance(location) <= radius){
                     if (playerData.hasFlag() && playerData.getFlagColor() != teamColor && playerData.getTeam() == teamColor){
-                        battlegroundInstance.broadcast(playerData.getTeam().chatColor
+                        instance.broadcast(playerData.getTeam().chatColor
                                 + playerData.getPlayer().getDisplayName() + " has captured the "
                                 + playerData.getFlagColor().toString() +" Team's flag!");
-                        battlegroundInstance.getTeam(playerData.getTeam()).addScore(1);
+                        instance.getTeam(playerData.getTeam()).addScore(1);
 
                         Bukkit.getPluginManager().callEvent(
-                                new FlagCaptureEvent(playerData.getFlagColor(), playerData.getFlagId(), battlegroundInstance, playerData.getPlayer(), playerData.getTeam())
+                                new FlagCaptureEvent(playerData.getFlagColor(), playerData.getFlagId(), instance, playerData.getPlayer(), playerData.getTeam())
                         );
 
                         playerData.setFlag(null, "");
@@ -62,7 +63,7 @@ public class DoodadFlagCaptureInstance extends DoodadRadialFieldInstance impleme
 
     @EventHandler
     public void onFlagSpawnEvent(FlagSpawnEvent event){
-        if (event.getInstance() != this.getBattlegroundInstance()) return;
+        if (event.getInstance() != this.getInstance()) return;
 
         if (!event.isMobile() && event.getFlagId().equals(flagId)){
             this.active = true;
@@ -71,7 +72,7 @@ public class DoodadFlagCaptureInstance extends DoodadRadialFieldInstance impleme
 
     @EventHandler
     public void onFlagDespawnEvent(FlagDespawnEvent event){
-        if (event.getInstance() != this.getBattlegroundInstance()) return;
+        if (event.getInstance() != this.getInstance()) return;
 
         if (!event.isMobile() && event.getFlagId().equals(flagId)){
             this.active = false;

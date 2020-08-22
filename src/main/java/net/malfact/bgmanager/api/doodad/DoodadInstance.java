@@ -4,7 +4,7 @@ import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 
 public interface DoodadInstance {
 
-    BattlegroundInstance getBattlegroundInstance();
+    BattlegroundInstance getInstance();
 
     void destroy();
 

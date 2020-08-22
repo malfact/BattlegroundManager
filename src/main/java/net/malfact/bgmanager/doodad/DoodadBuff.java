@@ -1,10 +1,10 @@
 package net.malfact.bgmanager.doodad;
 
-import net.malfact.bgmanager.BgManager;
 import net.malfact.bgmanager.api.battleground.Battleground;
 import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import net.malfact.bgmanager.api.doodad.DoodadInstance;
 import net.malfact.bgmanager.command.edit.EditCommand;
+import net.malfact.bgmanager.doodad.instance.DoodadBuffInstance;
 import net.querz.nbt.tag.CompoundTag;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

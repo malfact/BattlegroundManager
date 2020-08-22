@@ -26,7 +26,7 @@ public class EditCommandDoodad implements SubCommand {
 
         if (args.length == 1){
             battleground.getDoodads().forEach(doodad -> {
-                sender.sendMessage(ChatColor.YELLOW + ">> (" + DoodadType.getByClass(doodad.getClass()) + ")"
+                sender.sendMessage(ChatColor.YELLOW + ">> (" + DoodadType.getByClass(doodad.getClass()).getName() + ")"
                         + doodad.getId());
             });
         } else if (args.length >= 3) {

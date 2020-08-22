@@ -1,21 +1,28 @@
-package net.malfact.bgmanager.doodad;
+package net.malfact.bgmanager.doodad.instance;
 
 import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
+import net.malfact.bgmanager.doodad.DoodadRadialField;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
-public class DoodadRadialFieldInstance extends DoodadPhysicalBaseInstance {
+public class DoodadRadialFieldInstance extends DoodadPhysicalInstance {
 
     protected final double radius;
-    protected final Color color;
+
+    protected Color color;
     protected boolean active = true;
 
-    protected DoodadRadialFieldInstance(BattlegroundInstance battlegroundInstance, DoodadRadialField doodad) {
+    public DoodadRadialFieldInstance(BattlegroundInstance battlegroundInstance, DoodadRadialField doodad) {
         super(battlegroundInstance, doodad);
-        this.radius = doodad.radius;
-        this.color = doodad.color;
+        this.radius = doodad.getRadius();
+        this.color = doodad.getColor();
+    }
+
+    @Override
+    public void destroy() {
+
     }
 
     @Override

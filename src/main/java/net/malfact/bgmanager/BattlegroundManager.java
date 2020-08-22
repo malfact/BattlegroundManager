@@ -3,6 +3,7 @@ package net.malfact.bgmanager;
 import net.malfact.bgmanager.api.battleground.Battleground;
 import net.malfact.bgmanager.battleground.BattlegroundBase;
 import net.malfact.bgmanager.battleground.BattlegroundTask;
+import net.malfact.bgmanager.event.BattlegroundLoadEvent;
 import net.malfact.bgmanager.queue.QueueManager;
 import net.querz.nbt.io.NBTUtil;
 import net.querz.nbt.tag.CompoundTag;
@@ -123,6 +124,8 @@ public final class BattlegroundManager {
                             + "> from " + bg.getId() + ".dat");
 
                     WorldManager.get().loadWorld(bg.getId());
+
+                    Bukkit.getPluginManager().callEvent(new BattlegroundLoadEvent(bg));
                 }
             } catch (IOException e) {
                 BgManager.getInstance().getLogger().log(Level.SEVERE, "Failed to load " + file.getName() + "!");

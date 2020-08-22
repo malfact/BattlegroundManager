@@ -4,6 +4,7 @@ import net.malfact.bgmanager.api.battleground.Battleground;
 import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import net.malfact.bgmanager.api.doodad.DoodadInstance;
 import net.malfact.bgmanager.command.edit.EditCommand;
+import net.malfact.bgmanager.doodad.instance.DoodadRadialFieldInstance;
 import net.querz.nbt.tag.CompoundTag;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -27,6 +28,10 @@ public class DoodadRadialField extends DoodadPhysicalBase {
 
     public void setRadius(double radius) {
         this.radius = radius;
+    }
+
+    public Color getColor() {
+        return color;
     }
 
     @Override
