@@ -1,7 +1,7 @@
 package net.malfact.bgmanager.doodad.instance;
 
 import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
-import net.malfact.bgmanager.doodad.DoodadRadialField;
+import net.malfact.bgmanager.doodad.DoodadRadialFieldBase;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -14,10 +14,10 @@ public class DoodadRadialFieldInstance extends DoodadPhysicalInstance {
     protected Color color;
     protected boolean active = true;
 
-    public DoodadRadialFieldInstance(BattlegroundInstance battlegroundInstance, DoodadRadialField doodad) {
+    public DoodadRadialFieldInstance(BattlegroundInstance battlegroundInstance, DoodadRadialFieldBase doodad) {
         super(battlegroundInstance, doodad);
         this.radius = doodad.getRadius();
-        this.color = doodad.getColor();
+        this.color = doodad.getTeamColor().color;
     }
 
     @Override

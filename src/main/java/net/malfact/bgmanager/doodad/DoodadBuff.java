@@ -17,7 +17,7 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 
-public class DoodadBuff extends DoodadRadialField {
+public class DoodadBuff extends DoodadRadialFieldBase {
 
     protected PotionEffectType effectType;
     protected int effectDuration = 0;

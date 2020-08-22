@@ -5,6 +5,8 @@ import org.bukkit.Sound;
 
 public class Config {
 
+    public static final String BG_SAVE_VERSION = "1.0";
+
     public static final String BG_READY_MESSAGE01 = "A Battleground is ready!";
     public static final String BG_READY_MESSAGE02 = "Do you wish to join?";
     public static final String BG_READY_CONFIRM = "Yes";

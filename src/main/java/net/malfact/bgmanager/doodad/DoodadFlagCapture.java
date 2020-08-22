@@ -10,14 +10,12 @@ import net.querz.nbt.tag.CompoundTag;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class DoodadFlagCapture extends DoodadRadialField {
+public class DoodadFlagCapture extends DoodadRadialFieldBase {
 
-    protected TeamColor teamColor = TeamColor.RED;
     protected String flagId = "";
 
     public DoodadFlagCapture(String id, Battleground parent) {
         super(id, parent);
-        color = teamColor.color;
     }
 
     public void setFlagId(String flagId) {
@@ -28,15 +26,6 @@ public class DoodadFlagCapture extends DoodadRadialField {
         return flagId;
     }
 
-    public void setTeamColor(TeamColor teamColor){
-        this.teamColor = teamColor;
-        this.color = teamColor.color;
-    }
-
-    public TeamColor getTeamColor() {
-        return teamColor;
-    }
-
     @Override
     public DoodadInstance createInstance(BattlegroundInstance battlegroundInstance) {
         return new DoodadFlagCaptureInstance(battlegroundInstance, this);
@@ -44,28 +33,14 @@ public class DoodadFlagCapture extends DoodadRadialField {
 
     @Override
     public CompoundTag writeNBT(CompoundTag tag) {
-        tag.putString("teamColor", teamColor.toString());
         tag.putString("flagId", flagId);
         return super.writeNBT(tag);
     }
 
     @Override
     public CompoundTag readNBT(CompoundTag tag) {
-        setTeamColor(TeamColor.valueOf(tag.getString("teamColor")));
         setFlagId(tag.getString("flagId"));
         return super.readNBT(tag);
-    }
-
-    @EditCommand(cmd ="setTeamColor")
-    public void setTeamColor(Player player, String[] args){
-        if (args.length == 0) {
-            player.sendMessage("<" + id + "> Team Color is set to " + teamColor.chatColor + teamColor.toString());
-            return;
-        }
-
-        TeamColor color = TeamColor.valueOf(args[0]);
-        player.sendMessage("<" + id + "> Team Color set to " + teamColor.chatColor + teamColor.toString());
-        setTeamColor(color);
     }
 
     @EditCommand(cmd ="setFlagId")

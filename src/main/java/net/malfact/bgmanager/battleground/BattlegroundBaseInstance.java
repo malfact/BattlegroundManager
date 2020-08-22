@@ -358,7 +358,7 @@ public class BattlegroundBaseInstance implements BattlegroundInstance, Listener 
         if (timer > 0)
             timer--;
 
-        timerBar.setCurrentValue(timer/20);
+        timerBar.setCurrentValue((timer + 10)/20);
 
         if (getStatus() == BattlegroundStatus.WAITING){
             setStatus(BattlegroundStatus.STARTING);

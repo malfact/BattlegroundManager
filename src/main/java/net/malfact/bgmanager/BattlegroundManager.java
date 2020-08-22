@@ -5,8 +5,11 @@ import net.malfact.bgmanager.battleground.BattlegroundBase;
 import net.malfact.bgmanager.battleground.BattlegroundTask;
 import net.malfact.bgmanager.event.BattlegroundLoadEvent;
 import net.malfact.bgmanager.queue.QueueManager;
+import net.malfact.bgmanager.util.Config;
 import net.querz.nbt.io.NBTUtil;
+import net.querz.nbt.io.NamedTag;
 import net.querz.nbt.tag.CompoundTag;
+import net.querz.nbt.tag.StringTag;
 import net.querz.nbt.tag.Tag;
 import org.bukkit.Bukkit;
 
@@ -113,23 +116,43 @@ public final class BattlegroundManager {
 
         for (File file : listOfFiles){
             try {
-                Tag<?> _tag = NBTUtil.read(file).getTag();
-                if (_tag instanceof CompoundTag) {
-                    CompoundTag tag = (CompoundTag) _tag;
-                    BattlegroundBase bg = new BattlegroundBase(tag.getString("id"));
-                    bg.readNBT(tag);
-                    RegisterBattleground(bg);
-
-                    BgManager.getInstance().getLogger().log(Level.INFO, "Loaded Battleground <" + bg.getId()
-                            + "> from " + bg.getId() + ".dat");
-
-                    WorldManager.get().loadWorld(bg.getId());
-
-                    Bukkit.getPluginManager().callEvent(new BattlegroundLoadEvent(bg));
+                NamedTag namedTag = NBTUtil.read(file);
+                if (namedTag == null) {
+                    BgManager.getInstance().getLogger().log(Level.SEVERE, "Failed to load " + file.getName() + "! No tag found!");
+                    continue;
                 }
+                Tag<?> _tag = namedTag.getTag();
+
+                if (!(_tag instanceof CompoundTag)){
+                    BgManager.getInstance().getLogger().log(Level.SEVERE, "Unable to load " + file.getName() + "! Tag is not of type (CompoundTag)!");
+                    continue;
+                }
+
+                CompoundTag tag = (CompoundTag) _tag;
+
+                /*if (!tag.containsKey("_version") || tag.getString("_version").equalsIgnoreCase(Config.BG_SAVE_VERSION)) {
+                    BgManager.getInstance().getLogger().log(Level.SEVERE, "Unable to load " + file.getName() + "! Invalid Save Version!");
+                    BgManager.getInstance().getLogger().log(Level.SEVERE, tag.getString("_version") + "!=" + Config.BG_SAVE_VERSION);
+                    continue;
+                }
+
+                if (!tag.containsKey("_type") || tag.getString("_type").equalsIgnoreCase("battleground")) {
+                    BgManager.getInstance().getLogger().log(Level.SEVERE, "Unable to load " + file.getName() + "! Not a battleground save file!");
+                    continue;
+                }*/
+
+                BattlegroundBase bg = new BattlegroundBase(tag.getString("id"));
+                bg.readNBT(tag);
+                RegisterBattleground(bg);
+
+                BgManager.getInstance().getLogger().log(Level.INFO, "Loaded Battleground <" + bg.getId()
+                        + "> from " + bg.getId() + ".dat");
+
+                WorldManager.get().loadWorld(bg.getId());
+
+                Bukkit.getPluginManager().callEvent(new BattlegroundLoadEvent(bg));
             } catch (IOException e) {
-                BgManager.getInstance().getLogger().log(Level.SEVERE, "Failed to load " + file.getName() + "!");
-                e.printStackTrace();
+                BgManager.getInstance().getLogger().log(Level.SEVERE, "Failed to load " + file.getName() + "! File must be corrupted!");
             }
         }
     }
@@ -145,6 +168,8 @@ public final class BattlegroundManager {
             return;
 
         CompoundTag tag = battleground.writeNBT(new CompoundTag());
+        tag.putString("_version", Config.BG_SAVE_VERSION);
+        tag.putString("_type", "battleground");
 
         try {
             File folder = new File(BgManager.getInstance().getDataFolder().getAbsoluteFile()

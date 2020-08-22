@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 
-public class DoodadGraveyard extends DoodadRadialField {
+public class DoodadGraveyard extends DoodadRadialFieldBase {
 
     protected TeamColor teamColor = TeamColor.RED;
     protected int respawnTime = 0;
@@ -21,23 +21,8 @@ public class DoodadGraveyard extends DoodadRadialField {
         super(id, parent);
     }
 
-    public void setTeamColor(TeamColor teamColor){
-        this.teamColor = teamColor;
-        this.color = teamColor.color;
-        if (doodadInteractor != null){
-            doodadInteractor.setCustomName(teamColor.chatColor + "<GY " + respawnTime + "> " + id);
-        }
-    }
-
-    public TeamColor getTeamColor() {
-        return teamColor;
-    }
-
     public void setRespawnTime(int respawnTime) {
         this.respawnTime = respawnTime;
-        if (doodadInteractor != null){
-            doodadInteractor.setCustomName(teamColor.chatColor + "<GY " + respawnTime + "> " + id);
-        }
     }
 
     public int getRespawnTime() {
@@ -71,7 +56,7 @@ public class DoodadGraveyard extends DoodadRadialField {
         }
 
         TeamColor color = TeamColor.valueOf(args[0]);
-        player.sendMessage("<" + id + "> Team Color set to " + teamColor.chatColor + teamColor.toString());
+        player.sendMessage("<" + id + "> Team Color set to " + color.chatColor + color.toString());
         setTeamColor(color);
     }
 

@@ -11,6 +11,7 @@ import net.malfact.bgmanager.api.doodad.Doodad;
 import net.malfact.bgmanager.api.doodad.DoodadType;
 import net.malfact.bgmanager.util.Config;
 import net.querz.nbt.tag.CompoundTag;
+import net.querz.nbt.tag.ListTag;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -238,10 +239,11 @@ public class BattlegroundBase implements Battleground {
 
         tag.put("teams", teamsTag);
 
-        CompoundTag doodadsTag = new CompoundTag();
-        if (doodads.size() > 0)
-            doodads.forEach((k, v) -> doodadsTag.put(k, v.writeNBT(new CompoundTag())));
-        tag.put("doodads", doodadsTag);
+        ListTag<CompoundTag> doodadsList = new ListTag<>(CompoundTag.class);
+        if (doodads.size() > 0){
+            doodads.values().forEach(doodad -> doodadsList.add(doodad.writeNBT(new CompoundTag())));
+        }
+        tag.put("doodads", doodadsList);
 
         return tag;
     }
@@ -278,17 +280,15 @@ public class BattlegroundBase implements Battleground {
             });
         }
 
-        CompoundTag doodadsTag = tag.getCompoundTag("doodads");
+        ListTag<CompoundTag> doodadsList = tag.getListTag("doodads").asCompoundTagList();
 
-        if (doodadsTag != null){
-            doodadsTag.keySet().forEach(k -> {
-                CompoundTag doodadTag = doodadsTag.getCompoundTag(k);
-                Doodad doodad = addDoodad(k, DoodadType.getByName(doodadTag.getString("doodad_type")));
-                if (doodad != null)
-                    doodad.readNBT(doodadTag);
-                else
-                    BgManager.getInstance().getLogger().log(Level.WARNING, "Error loading Doodad " + k + "! Skipping!");
-            });
+        for (CompoundTag doodadTag : doodadsList){
+            String id = doodadTag.getString("doodad_id");
+            Doodad doodad = addDoodad(id, DoodadType.getByName(doodadTag.getString("doodad_type")));
+            if (doodad != null)
+                doodad.readNBT(doodadTag);
+            else
+                BgManager.getInstance().getLogger().log(Level.WARNING, "Error loading Doodad " + id + "! Skipping!");
         }
 
         return tag;

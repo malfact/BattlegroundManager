@@ -1,7 +1,9 @@
 package net.malfact.bgmanager.api.battleground;
 
+import org.bukkit.Color;
+
 public enum TeamColor {
-    DEFAULT(org.bukkit.Color.WHITE, org.bukkit.ChatColor.WHITE),
+    DEFAULT(Color.YELLOW, org.bukkit.ChatColor.WHITE),
     RED(org.bukkit.Color.RED, org.bukkit.ChatColor.RED),
     BLUE(org.bukkit.Color.BLUE, org.bukkit.ChatColor.BLUE),
     GREEN(org.bukkit.Color.GREEN, org.bukkit.ChatColor.GREEN);

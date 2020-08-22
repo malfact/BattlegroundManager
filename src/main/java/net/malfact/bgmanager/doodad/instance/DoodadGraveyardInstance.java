@@ -48,7 +48,7 @@ public class DoodadGraveyardInstance extends DoodadRadialFieldInstance {
     public void tick() {
         timer--;
 
-        timerBar.setCurrentValue(timer/20);
+        timerBar.setCurrentValue((timer + 10)/20);
 
         for (PlayerData playerData : instance.getPlayerData()){
             if (playerData.isDead()){

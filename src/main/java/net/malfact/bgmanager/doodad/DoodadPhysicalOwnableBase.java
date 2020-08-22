@@ -3,10 +3,7 @@ package net.malfact.bgmanager.doodad;
 import net.malfact.bgmanager.api.battleground.Battleground;
 import net.malfact.bgmanager.api.battleground.TeamColor;
 import net.malfact.bgmanager.api.doodad.DoodadOwnable;
-import net.malfact.bgmanager.command.edit.EditCommand;
 import net.querz.nbt.tag.CompoundTag;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 
 public abstract class DoodadPhysicalOwnableBase extends DoodadPhysicalBase implements DoodadOwnable {
 

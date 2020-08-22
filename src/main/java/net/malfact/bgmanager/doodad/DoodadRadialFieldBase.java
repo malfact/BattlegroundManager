@@ -1,24 +1,19 @@
 package net.malfact.bgmanager.doodad;
 
 import net.malfact.bgmanager.api.battleground.Battleground;
-import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
-import net.malfact.bgmanager.api.doodad.DoodadInstance;
 import net.malfact.bgmanager.command.edit.EditCommand;
-import net.malfact.bgmanager.doodad.instance.DoodadRadialFieldInstance;
 import net.querz.nbt.tag.CompoundTag;
 import org.bukkit.ChatColor;
-import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 
-public class DoodadRadialField extends DoodadPhysicalBase {
+public abstract class DoodadRadialFieldBase extends DoodadPhysicalOwnableBase {
     protected double radius = 1.0;
-    protected Color color = Color.YELLOW;
 
-    public DoodadRadialField(String id, Battleground parent) {
+    public DoodadRadialFieldBase(String id, Battleground parent) {
         super(id, parent);
     }
 
@@ -28,15 +23,6 @@ public class DoodadRadialField extends DoodadPhysicalBase {
 
     public void setRadius(double radius) {
         this.radius = radius;
-    }
-
-    public Color getColor() {
-        return color;
-    }
-
-    @Override
-    public DoodadInstance createInstance(BattlegroundInstance battlegroundInstance) {
-        return new DoodadRadialFieldInstance(battlegroundInstance, this);
     }
 
     @Override
@@ -54,7 +40,7 @@ public class DoodadRadialField extends DoodadPhysicalBase {
                     Particle.REDSTONE,
                     l.add(radius * Math.sin(i), 0.0, radius * Math.cos(i)),
                     1,
-                    new Particle.DustOptions(color, 0.5f)
+                    new Particle.DustOptions(teamColor.color, 0.5f)
             );
         }
     }
@@ -73,7 +59,7 @@ public class DoodadRadialField extends DoodadPhysicalBase {
         return super.readNBT(tag);
     }
 
-    @EditCommand(cmd = "setradius", args = {double.class})
+    @EditCommand(cmd = "setradius")
     public void setRadius(Player player, String... args){
         if (args.length == 0) {
             player.sendMessage("<" + id + "> Radius is set to " + ChatColor.AQUA + getRadius());
