@@ -4,6 +4,7 @@ import net.malfact.bgmanager.api.battleground.Battleground;
 import net.malfact.bgmanager.api.doodad.Doodad;
 import net.malfact.bgmanager.api.command.SubCommand;
 import net.malfact.bgmanager.BattlegroundManager;
+import net.malfact.bgmanager.api.doodad.DoodadPhysical;
 import net.malfact.bgmanager.api.doodad.DoodadType;
 import net.malfact.bgmanager.util.Util;
 import org.bukkit.ChatColor;
@@ -23,6 +24,7 @@ public class EditCommandDoodad implements SubCommand {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args, String[] preArgs) {
         Battleground battleground = BattlegroundManager.get().getBattleground(args[0]);
+        Player player = (Player) sender;
 
         if (args.length == 1){
             battleground.getDoodads().forEach(doodad -> {
@@ -32,6 +34,11 @@ public class EditCommandDoodad implements SubCommand {
         } else if (args.length >= 3) {
             switch(args[1].toLowerCase()){
                 case "#create":
+                    if (player.getWorld() != battleground.getWorld()){
+                        player.sendMessage(ChatColor.RED + "You are not in the correct world!");
+                        return true;
+                    }
+
                     if (args.length == 3)
                         sender.sendMessage(ChatColor.RED + "ID is required when creating a doodad!");
                     else if (args.length == 4) {
@@ -46,9 +53,16 @@ public class EditCommandDoodad implements SubCommand {
                             return true;
                         }
 
-                        battleground.addDoodad(args[3], doodadType);
-                        sender.sendMessage(ChatColor.GOLD + "Created Doodad of Type <" + args[2] + "> in <"
-                                + args[0] + "> with id of <" + args[3] + ">");
+                        Doodad newDoodad = battleground.addDoodad(args[3], doodadType);
+                        if (newDoodad != null) {
+                            sender.sendMessage(ChatColor.GOLD + "Created Doodad of Type <" + args[2] + "> in <"
+                                    + args[0] + "> with id of <" + args[3] + ">");
+                            if (newDoodad instanceof DoodadPhysical){
+                                ((DoodadPhysical) newDoodad).setLocation(player.getLocation());
+                            }
+                        } else {
+                            sender.sendMessage(ChatColor.RED + "Unable to create Doodad with id <" + args[3] + ">");
+                        }
                     }
 
                     return true;
@@ -62,8 +76,6 @@ public class EditCommandDoodad implements SubCommand {
                     sender.sendMessage(ChatColor.GOLD + "Doodad <" + args[2] + "> removed from <" + args[0] + ">");
                     break;
                 default:
-                    Player player = (Player) sender;
-
                     Doodad doodad = battleground.getDoodad(args[1]);
                     if (doodad == null){
                         sender.sendMessage(ChatColor.RED + args[1] + " is not a valid doodad of " + args[0]);
