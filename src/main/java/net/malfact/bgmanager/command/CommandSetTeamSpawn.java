@@ -39,7 +39,7 @@ public class CommandSetTeamSpawn implements PluginCommand {
             return true;
         }
 
-        Battleground bg = BattlegroundManager.get().getBattleground(args[0]);
+        Battleground bg = BattlegroundManager.getBattleground(args[0]);
         if (bg == null) {
             player.sendMessage(ChatColor.RED + args[0] + " is not a Battleground!");
             return true;
@@ -60,7 +60,7 @@ public class CommandSetTeamSpawn implements PluginCommand {
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         List<String> tabs = new ArrayList<>();
         if (args.length == 1){
-            ArrayList<String> battlegrounds = new ArrayList<>(Arrays.asList(BattlegroundManager.get().getBattlegroundIds()));
+            ArrayList<String> battlegrounds = new ArrayList<>(Arrays.asList(BattlegroundManager.getBattlegroundIds()));
             StringUtil.copyPartialMatches(args[0], battlegrounds, tabs);
 
         } else if (args.length == 2){

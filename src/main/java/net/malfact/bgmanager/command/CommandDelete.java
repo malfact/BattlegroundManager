@@ -27,8 +27,8 @@ public class CommandDelete implements PluginCommand {
         }
 
         sender.sendMessage(ChatColor.RED + "Deleted Battleground with ID<" + args[0] + ">");
-        BattlegroundManager.get().UnregisterBattleground(args[0]);
-        BattlegroundManager.get().deleteBattleground(args[0]);
+        BattlegroundManager.unregisterBattleground(args[0]);
+        BattlegroundManager.deleteBattleground(args[0]);
         return true;
     }
 
@@ -36,7 +36,7 @@ public class CommandDelete implements PluginCommand {
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         List<String> tabs = new ArrayList<>();
         if (args.length == 1){
-            ArrayList<String> battlegrounds = new ArrayList<>(Arrays.asList(BattlegroundManager.get().getBattlegroundIds()));
+            ArrayList<String> battlegrounds = new ArrayList<>(Arrays.asList(BattlegroundManager.getBattlegroundIds()));
             StringUtil.copyPartialMatches(args[0], battlegrounds, tabs);
         }
 

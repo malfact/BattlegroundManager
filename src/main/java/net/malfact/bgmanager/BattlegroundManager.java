@@ -9,36 +9,29 @@ import net.malfact.bgmanager.util.Config;
 import net.querz.nbt.io.NBTUtil;
 import net.querz.nbt.io.NamedTag;
 import net.querz.nbt.tag.CompoundTag;
-import net.querz.nbt.tag.StringTag;
 import net.querz.nbt.tag.Tag;
 import org.bukkit.Bukkit;
+import org.bukkit.event.world.WorldLoadEvent;
+import org.bukkit.event.world.WorldSaveEvent;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public final class BattlegroundManager {
 
-    private static BattlegroundManager instance;
+    private static final Map<String, Battleground> battlegroundRegistry = new HashMap<>();
+    private static final Map<String, BattlegroundTask> battlegroundTaskRegistry = new HashMap<>();
 
-    public static BattlegroundManager get(){
-        if (instance == null){
-            instance = new BattlegroundManager();
-        }
-
-        return instance;
-    }
-
-    private BattlegroundManager(){}
-
-    private final Map<String, Battleground> battlegroundRegistry = new HashMap<>();
-    private final Map<String, BattlegroundTask> battlegroundTaskRegistry = new HashMap<>();
-
-    public boolean RegisterBattleground(BattlegroundBase battleground){
-        if (battlegroundRegistry.containsKey(battleground.getId()))
+    public static boolean registerBattleground(BattlegroundBase battleground){
+        if (battlegroundRegistry.containsKey(battleground.getId())) {
+            BgManager.getInstance().getLogger().log(Level.WARNING, "Unable to register Battleground with id <"
+                    + battleground.getId() + "> Battleground with this id is already registered!");
             return false;
+        }
 
         battlegroundRegistry.put(battleground.getId(), battleground);
         QueueManager.get().registerQueue(battleground.getId());
@@ -47,27 +40,28 @@ public final class BattlegroundManager {
         Bukkit.getScheduler().scheduleSyncRepeatingTask(BgManager.getInstance(), (Runnable) task, 0L, 1L);
         battlegroundTaskRegistry.put(battleground.getId(), task);
 
-        System.out.println("Registered battleground with id <" + battleground.getId() + ">");
-
-        WorldManager.get().loadWorld(battleground.getId());
+        BgManager.getInstance().getLogger().log(Level.INFO, "Registered battleground with id <"
+                + battleground.getId() + ">");
 
         return true;
     }
 
-    public void UnregisterBattleground(String id){
+    public static void unregisterBattleground(String id){
         if (battlegroundRegistry.remove(id) != null){
             QueueManager.get().unregisterQueue(id);
             try {
                 battlegroundTaskRegistry.get(id).cancel();
             } catch(IllegalStateException ignored){ }
+
+            BgManager.getInstance().getLogger().log(Level.INFO, "Unregistered battleground with id <" + id + ">");
         }
     }
 
-    public Battleground getBattleground(String id){
+    public static Battleground getBattleground(String id){
         return battlegroundRegistry.get(id);
     }
 
-    public Battleground getBattlegroundByName(String name){
+    public static Battleground getBattlegroundByName(String name){
         for (Battleground bg : battlegroundRegistry.values()){
             if (bg.getName().equalsIgnoreCase(name)){
                 return bg;
@@ -77,7 +71,8 @@ public final class BattlegroundManager {
         return null;
     }
 
-    public Battleground getBattleground(String id, String name){
+    @Deprecated
+    public static Battleground getBattleground(String id, String name){
         Battleground bg = getBattlegroundByName(name);
         if (bg == null){
             bg = getBattleground(id);
@@ -86,11 +81,11 @@ public final class BattlegroundManager {
         return bg;
     }
 
-    public Battleground[] getBattlegrounds(){
+    public static Battleground[] getBattlegrounds(){
         return battlegroundRegistry.values().toArray(new Battleground[0]);
     }
 
-    public void unloadBattlegrounds(){
+    public static void unloadBattlegrounds(){
         //TODO Figure this out
         for (Battleground bg : battlegroundRegistry.values()){
             bg.destroy();
@@ -101,11 +96,11 @@ public final class BattlegroundManager {
         }
     }
 
-    public String[] getBattlegroundIds(){
+    public static String[] getBattlegroundIds(){
         return battlegroundRegistry.keySet().toArray(new String[0]);
     }
 
-    public void loadBattlegrounds(){
+    public static void loadBattlegrounds(){
         File folder = new File(BgManager.getInstance().getDataFolder().getAbsoluteFile() + "/battlegrounds");
         folder.mkdirs();
         File[] listOfFiles = folder.listFiles();
@@ -143,7 +138,7 @@ public final class BattlegroundManager {
 
                 BattlegroundBase bg = new BattlegroundBase(tag.getString("id"));
                 bg.readNBT(tag);
-                RegisterBattleground(bg);
+                registerBattleground(bg);
 
                 BgManager.getInstance().getLogger().log(Level.INFO, "Loaded Battleground <" + bg.getId()
                         + "> from " + bg.getId() + ".dat");
@@ -157,13 +152,13 @@ public final class BattlegroundManager {
         }
     }
 
-    public void saveBattlegrounds(){
+    public static void saveBattlegrounds(){
         for (Battleground battleground : getBattlegrounds()){
             saveBattleground(battleground);
         }
     }
 
-    public void saveBattleground(Battleground battleground){
+    public static void saveBattleground(Battleground battleground){
         if (battleground == null)
             return;
 
@@ -185,7 +180,7 @@ public final class BattlegroundManager {
         }
     }
 
-    public void deleteBattleground(String id){
+    public static void deleteBattleground(String id){
         File file = new File(BgManager.getInstance().getDataFolder().getAbsoluteFile() + "/battlegrounds/" + id
                 + ".dat");
 

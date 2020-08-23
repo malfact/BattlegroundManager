@@ -8,6 +8,7 @@ import net.malfact.bgmanager.api.doodad.Doodad;
 import net.malfact.bgmanager.api.doodad.DoodadInstance;
 import net.malfact.bgmanager.doodad.instance.DoodadGraveyardInstance;
 import net.malfact.bgmanager.event.InstanceChangeStatusEvent;
+import net.malfact.bgmanager.event.InstanceLoadEvent;
 import net.malfact.bgmanager.util.Config;
 import org.bukkit.*;
 import org.bukkit.boss.BarColor;
@@ -26,6 +27,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -37,7 +39,7 @@ import java.util.*;
 
 public class BattlegroundBaseInstance implements BattlegroundInstance, Listener {
 
-    protected final String instanceId;
+    // Variables inherited from Battleground
     protected final String battlegroundId;
     protected final String name;
     protected final int minPlayers;
@@ -45,19 +47,23 @@ public class BattlegroundBaseInstance implements BattlegroundInstance, Listener 
     protected final int battleLength;
     protected final int winScore;
 
+    // Data Storage
     protected final Map<String, DoodadInstance> doodads = new HashMap<>();
     protected final Map<UUID, PlayerData> playerData = new HashMap<>();
     protected final HashMap<TeamColor, TeamInstance> teams = new HashMap<>();
 
-    protected BattlegroundStatus status = BattlegroundStatus.WAITING;
-
+    // Local Variables
+    protected final String instanceId;
+    protected final World world;
+    protected BattlegroundStatus status = BattlegroundStatus.INIT;
     protected final Scoreboard scoreboard;
     protected ProgressBar timerBar;
 
     private int timer = 0;
 
-    protected BattlegroundBaseInstance(BattlegroundBase baseBattleground, String instanceId){
-        this.instanceId = instanceId;
+    protected BattlegroundBaseInstance(BattlegroundBase baseBattleground){
+
+        // Assign variables inherited from Battleground;
         this.battlegroundId = baseBattleground.id;
         this.name = baseBattleground.name;
         this.minPlayers = baseBattleground.minPlayers;
@@ -65,10 +71,15 @@ public class BattlegroundBaseInstance implements BattlegroundInstance, Listener 
         this.battleLength = baseBattleground.battleLength;
         this.winScore = baseBattleground.winScore;
 
+        // Assigned InstanceId
+        this.instanceId = UUID.randomUUID().toString();
+
+        // Instantiate teams
         for(Team team : baseBattleground.teams.values()){
             teams.put(team.getColor(), team.createInstance(this));
         }
 
+        // Instantiate Doodads
         for (Doodad doodad : baseBattleground.doodads.values()){
             DoodadInstance instance = doodad.createInstance(this);
             if (instance == null)
@@ -76,6 +87,7 @@ public class BattlegroundBaseInstance implements BattlegroundInstance, Listener 
             doodads.put(doodad.getId(), instance);
         }
 
+        // Create Scoreboard
         scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
         Objective sb = scoreboard.registerNewObjective("scoreboard", "dummy", name);
         sb.setDisplaySlot(DisplaySlot.SIDEBAR);
@@ -90,9 +102,20 @@ public class BattlegroundBaseInstance implements BattlegroundInstance, Listener 
         scoreboard.getTeam("blue").setColor(ChatColor.BLUE);
         scoreboard.getTeam("blue").setCanSeeFriendlyInvisibles(true);
 
-        timerBar = new ProgressBar("Battle Starting", BarColor.RED, BarStyle.SEGMENTED_20);
+        // Create Main Timer Bar
+        timerBar = new ProgressBar("", BarColor.RED, BarStyle.SEGMENTED_20);
+
+        setStatus(BattlegroundStatus.INIT);
+
+        baseBattleground.setDebug(false);
+        WorldManager.get().copyWorldFolder(battlegroundId, "Instances/" + battlegroundId + "_" + instanceId);
+        world = WorldManager.get().loadWorld("Instances/" + battlegroundId + "_" + instanceId);
+        world.setAutoSave(false);
 
         BgManager.registerListener(this);
+        Bukkit.getPluginManager().callEvent(new InstanceLoadEvent(this));
+
+        setStatus(BattlegroundStatus.STARTING);
     }
 
     @Override
@@ -106,13 +129,8 @@ public class BattlegroundBaseInstance implements BattlegroundInstance, Listener 
     }
 
     @Override
-    public boolean isWorldLoaded() {
-        return getWorld() == null ? false : true;
-    }
-
-    @Override
     public World getWorld() {
-        return WorldManager.get().getWorld("Instances/" + instanceId);
+        return world;
     }
 
     @Override
@@ -260,17 +278,17 @@ public class BattlegroundBaseInstance implements BattlegroundInstance, Listener 
     public void setStatus(BattlegroundStatus status) {
         Bukkit.getPluginManager().callEvent(new InstanceChangeStatusEvent(this, status));
 
+        timerBar.setTitle(status.text);
+
         this.status = status;
         switch (status) {
-            case WAITING:
+            case INIT:
                 timer = 0;
-                timerBar.setTitle("Waiting");
                 timerBar.setTitleFlag(ProgressBar.TitleFlag.NONE);
                 timerBar.setMaxValue(0);
                 break;
             case STARTING:
                 timer = 1800;
-                timerBar.setTitle("Battle Starting");
                 timerBar.setTitleFlag(ProgressBar.TitleFlag.TIME);
                 timerBar.setMaxValue(90);
                 break;
@@ -281,7 +299,6 @@ public class BattlegroundBaseInstance implements BattlegroundInstance, Listener 
                             Config.BG_READY_SOUND_VOLUME, Config.BG_READY_SOUND_PITCH);
                 }
                 timer = battleLength*20;
-                timerBar.setTitle("Time Remaining");
                 timerBar.setTitleFlag(ProgressBar.TitleFlag.TIME);
                 timerBar.setMaxValue(battleLength);
                 break;
@@ -305,13 +322,11 @@ public class BattlegroundBaseInstance implements BattlegroundInstance, Listener 
                 broadcast("Use [/leave] to leave the battleground");
 
                 timer = 1200;
-                timerBar.setTitle("Battleground Closing");
                 timerBar.setTitleFlag(ProgressBar.TitleFlag.TIME);
                 timerBar.setMaxValue(60);
                 break;
-            case FINISHED:
+            case CLOSED:
                 timer = 0;
-                timerBar.setTitle("-Closed-");
                 timerBar.setMaxValue(0);
                 close();
         }
@@ -360,7 +375,7 @@ public class BattlegroundBaseInstance implements BattlegroundInstance, Listener 
 
         timerBar.setCurrentValue((timer + 10)/20);
 
-        if (getStatus() == BattlegroundStatus.WAITING){
+        if (getStatus() == BattlegroundStatus.INIT){
             setStatus(BattlegroundStatus.STARTING);
         }
 
@@ -389,7 +404,7 @@ public class BattlegroundBaseInstance implements BattlegroundInstance, Listener 
 
         if (getStatus() == BattlegroundStatus.ENDING){
             if (timer <= 0){
-                setStatus(BattlegroundStatus.FINISHED);
+                setStatus(BattlegroundStatus.CLOSED);
             }
         }
 
@@ -511,5 +526,10 @@ public class BattlegroundBaseInstance implements BattlegroundInstance, Listener 
             return;
 
         event.setRespawnLocation(getPlayerSpawnLocation(event.getPlayer()));
+    }
+
+    @EventHandler
+    public void onWorldLoad(WorldLoadEvent event){
+        event.getWorld().getName();
     }
 }

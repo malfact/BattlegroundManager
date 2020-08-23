@@ -22,10 +22,10 @@ public class CommandCreate implements PluginCommand {
         }
 
         BattlegroundBase bg = new BattlegroundBase(args[0]);
-        if (BattlegroundManager.get().RegisterBattleground(bg)) {
+        if (BattlegroundManager.registerBattleground(bg)) {
             sender.sendMessage(ChatColor.GOLD + "Created Battleground with ID<" + args[0] + ">");
 
-            BattlegroundManager.get().saveBattleground(bg);
+            BattlegroundManager.saveBattleground(bg);
         } else
             sender.sendMessage(ChatColor.RED + "Battleground with ID<" + args[0] + "> already exists!");
 

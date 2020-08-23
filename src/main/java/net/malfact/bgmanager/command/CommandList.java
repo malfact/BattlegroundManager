@@ -11,7 +11,7 @@ public class CommandList implements PluginCommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        Battleground[] list = BattlegroundManager.get().getBattlegrounds();
+        Battleground[] list = BattlegroundManager.getBattlegrounds();
         if (list.length > 0) {
             for (Battleground bg : list) {
                 sender.sendMessage(bg.getName()+ " - <" + bg.getId() + "> ("

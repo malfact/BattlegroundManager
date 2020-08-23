@@ -1,11 +1,11 @@
 package net.malfact.bgmanager.api.battleground;
 
 public enum BattlegroundStatus {
-    WAITING("Waiting for Players", true),
-    STARTING("Battle about to begin", true),
-    IN_PROGRESS("Battle in progress", true),
-    ENDING("Battle Ending", false),
-    FINISHED("Battle Over", false);
+    INIT("", false),
+    STARTING("Battle Starting", true),
+    IN_PROGRESS("Time Remaining", true),
+    ENDING("Battleground Closing", false),
+    CLOSED("Battleground Closed", false);
 
     public final String text;
     public final boolean allowEntry;

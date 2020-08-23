@@ -184,16 +184,7 @@ public class BattlegroundBase implements Battleground {
 
     @Override
     public BattlegroundInstance createInstance() {
-        String instanceId = id + "_" + UUID.randomUUID().toString();
-        WorldManager.get().copyWorldFolder(id, "Instances/" + instanceId);
-        WorldManager.get().loadWorld("Instances/" + instanceId).setAutoSave(false);
-
-        boolean debugStatus = debug;
-        setDebug(false);
-        BattlegroundInstance instance = new BattlegroundBaseInstance(this, instanceId);
-        setDebug(debugStatus);
-
-        return instance;
+        return new BattlegroundBaseInstance(this);
     }
 
     @Override

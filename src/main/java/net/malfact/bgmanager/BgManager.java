@@ -33,14 +33,14 @@ public final class BgManager extends JavaPlugin {
         Util.registerCommand(this, "test", new CommandTest());
 
 
-        BattlegroundManager.get().loadBattlegrounds();
+        BattlegroundManager.loadBattlegrounds();
     }
 
     @Override
     public void onDisable() {
         Bukkit.getScheduler().cancelTasks(this);
-        BattlegroundManager.get().unloadBattlegrounds();
-        BattlegroundManager.get().saveBattlegrounds();
+        BattlegroundManager.unloadBattlegrounds();
+        BattlegroundManager.saveBattlegrounds();
     }
 
     public static void registerListener(Listener listener){

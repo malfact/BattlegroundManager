@@ -21,13 +21,6 @@ public interface BattlegroundInstance{
     String getInstanceId();
 
     /**
-     * Gets if the world for this instance is loaded
-     *
-     * @return If the world is loaded or not
-     */
-    boolean isWorldLoaded();
-
-    /**
      * Gets the world that this instance is in
      *
      * @return World the instance is in

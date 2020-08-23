@@ -29,7 +29,7 @@ public class CommandEdit implements PluginCommand, SubCommandContainer {
         else
             return true;
 
-        Battleground battleground = BattlegroundManager.get().getBattleground(args[0]);
+        Battleground battleground = BattlegroundManager.getBattleground(args[0]);
         if (battleground == null){
             sender.sendMessage(ChatColor.RED + args[0] + " is not a valid battleground!");
             return true;
@@ -82,14 +82,14 @@ public class CommandEdit implements PluginCommand, SubCommandContainer {
         List<String> tabs = new ArrayList<>();
         if (args.length == 1){
             ArrayList<String> battlegrounds = new ArrayList<>(
-                    Arrays.asList(BattlegroundManager.get().getBattlegroundIds()));
+                    Arrays.asList(BattlegroundManager.getBattlegroundIds()));
             StringUtil.copyPartialMatches(args[0], battlegrounds, tabs);
 
         } else if (args.length == 2){
             ArrayList<String> commands = new ArrayList<>();
 
             //Get edit commands of battleground
-            Battleground battleground = BattlegroundManager.get().getBattleground(args[0]);
+            Battleground battleground = BattlegroundManager.getBattleground(args[0]);
             if (battleground != null) {
                 for (final Method method : battleground.getClass().getMethods()) {
                     if (method.isAnnotationPresent(EditCommand.class)) {

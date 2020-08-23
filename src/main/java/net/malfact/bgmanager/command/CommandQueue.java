@@ -30,7 +30,7 @@ public final class CommandQueue implements PluginCommand {
         }
 
         if (args.length < 1) {
-            Battleground[] list = BattlegroundManager.get().getBattlegrounds();
+            Battleground[] list = BattlegroundManager.getBattlegrounds();
             if (list.length > 0) {
                 for (Battleground bg : list) {
                     sender.sendMessage(ChatColor.GOLD + ">> " + bg.getName());
@@ -46,7 +46,7 @@ public final class CommandQueue implements PluginCommand {
             name = name + " " + args[i];
         }
 
-        Battleground bg = BattlegroundManager.get().getBattleground(args[0], name);
+        Battleground bg = BattlegroundManager.getBattleground(args[0], name);
         if (bg == null) {
             player.sendMessage(ChatColor.RED + name + " is not a Battleground!");
             return true;
@@ -73,7 +73,7 @@ public final class CommandQueue implements PluginCommand {
         List<String> tabs = new ArrayList<>();
         if (args.length >= 1){
             ArrayList<String> battlegrounds = new ArrayList<>();
-            for (Battleground bg : BattlegroundManager.get().getBattlegrounds()){
+            for (Battleground bg : BattlegroundManager.getBattlegrounds()){
                 if (bg.getEnabled()){
                     battlegrounds.add(bg.getName());
                 }

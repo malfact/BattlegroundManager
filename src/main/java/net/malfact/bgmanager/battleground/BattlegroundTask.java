@@ -25,7 +25,7 @@ public class BattlegroundTask extends BukkitRunnable {
 
         BattlegroundInstance[] instances = InstanceManager.get().getInstances(battleground.getId());
         for (BattlegroundInstance instance : instances){
-            if (instance.getStatus() == BattlegroundStatus.FINISHED){
+            if (instance.getStatus() == BattlegroundStatus.CLOSED){
                 InstanceManager.get().deleteInstance(battleground.getId(), instance.getInstanceId());
             } else {
                 instance.tick();

@@ -23,7 +23,7 @@ import java.util.List;
 public class EditCommandDoodad implements SubCommand {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args, String[] preArgs) {
-        Battleground battleground = BattlegroundManager.get().getBattleground(args[0]);
+        Battleground battleground = BattlegroundManager.getBattleground(args[0]);
         Player player = (Player) sender;
 
         if (args.length == 1){
@@ -104,7 +104,7 @@ public class EditCommandDoodad implements SubCommand {
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         List<String> tabs = new ArrayList<>();
 
-        Battleground battleground = BattlegroundManager.get().getBattleground(args[0]);
+        Battleground battleground = BattlegroundManager.getBattleground(args[0]);
 
         if (args.length == 2){
             ArrayList<String> doodads = new ArrayList<>();

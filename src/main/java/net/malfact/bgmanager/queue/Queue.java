@@ -22,11 +22,11 @@ public class Queue extends BukkitRunnable implements ResponseListener {
 
     public Queue(String id){
         this.id = id;
-        this.battleground = BattlegroundManager.get().getBattleground(id);
+        this.battleground = BattlegroundManager.getBattleground(id);
     }
 
-    private LinkedHashSet<UUID> members = new LinkedHashSet<>();
-    private LinkedHashMap<UUID, String> notified = new LinkedHashMap<>();
+    private final LinkedHashSet<UUID> members = new LinkedHashSet<>();
+    private final LinkedHashMap<UUID, String> notified = new LinkedHashMap<>();
 
     public void addPlayer(UUID uuid){
         members.add(uuid);
@@ -78,29 +78,21 @@ public class Queue extends BukkitRunnable implements ResponseListener {
         if (!battleground.getEnabled() || members.size() - notified.size() <= 0)
             return;
 
-        boolean instanceWorldLoading = false;
-
         BattlegroundInstance[] instances = InstanceManager.get().getInstances(id);
         for (BattlegroundInstance instance : instances){
             if (members.size() - notified.size() <= 0)
                 break;
 
             if (instance.getStatus().allowEntry && instance.getPlayerCount() < instance.getMaxPlayerCount()){
-                if (instance.isWorldLoaded())
-                    notifyPlayers(instance.getMaxPlayerCount() - instance.getPlayerCount(),
-                        instance.getInstanceId());
-                else
-                    instanceWorldLoading = true;
+                    notifyPlayers(instance.getMaxPlayerCount() - instance.getPlayerCount(), instance.getInstanceId());
             }
         }
 
-        if (!instanceWorldLoading) {
-            int available = members.size() - notified.size();
-            if (available > 0 && available >= battleground.getMinPlayerCount()) {
-                BattlegroundInstance instance = battleground.createInstance();
-                if (InstanceManager.get().registerInstance(battleground.getId(), instance))
-                    notifyPlayers(battleground.getMaxPlayerCount(), instance.getInstanceId());
-            }
+        int available = members.size() - notified.size();
+        if (available > 0 && available >= battleground.getMinPlayerCount()) {
+            BattlegroundInstance instance = battleground.createInstance();
+            if (InstanceManager.get().registerInstance(battleground.getId(), instance))
+                notifyPlayers(battleground.getMaxPlayerCount(), instance.getInstanceId());
         }
     }
 }

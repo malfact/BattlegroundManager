@@ -38,7 +38,7 @@ public class DoodadGateInstance extends DoodadPhysicalInstance implements Listen
 
     @EventHandler
     public void onBattlegroundChangeStatus(InstanceChangeStatusEvent event){
-        if (event.getBattleground() == this.instance && event.getStatus() == BattlegroundStatus.IN_PROGRESS){
+        if (event.getInstance() == this.instance && event.getStatus() == BattlegroundStatus.IN_PROGRESS){
             for (Location loc : gateBlocks){
                 loc.setWorld(instance.getWorld());
                 loc.getBlock().setType(Material.AIR);
