@@ -4,7 +4,7 @@ import net.malfact.bgmanager.api.battleground.Battleground;
 import net.malfact.bgmanager.api.command.PluginCommand;
 import net.malfact.bgmanager.api.command.SubCommand;
 import net.malfact.bgmanager.api.command.SubCommandContainer;
-import net.malfact.bgmanager.BattlegroundManager;
+import net.malfact.bgmanager.api.battleground.BattlegroundManager;
 import net.malfact.bgmanager.util.Util;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;

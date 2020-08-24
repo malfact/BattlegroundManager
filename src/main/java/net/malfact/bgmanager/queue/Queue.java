@@ -6,7 +6,7 @@ import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import net.malfact.bgmanager.response.ResponseListener;
 import net.malfact.bgmanager.response.ResponseManager;
 import net.malfact.bgmanager.util.Util;
-import net.malfact.bgmanager.BattlegroundManager;
+import net.malfact.bgmanager.api.battleground.BattlegroundManager;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 

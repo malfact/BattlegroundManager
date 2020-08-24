@@ -2,7 +2,7 @@ package net.malfact.bgmanager.command;
 
 import net.malfact.bgmanager.api.battleground.Battleground;
 import net.malfact.bgmanager.api.command.PluginCommand;
-import net.malfact.bgmanager.BattlegroundManager;
+import net.malfact.bgmanager.api.battleground.BattlegroundManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

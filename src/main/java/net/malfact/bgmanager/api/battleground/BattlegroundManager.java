@@ -1,8 +1,9 @@
-package net.malfact.bgmanager;
+package net.malfact.bgmanager.api.battleground;
 
-import net.malfact.bgmanager.api.battleground.Battleground;
-import net.malfact.bgmanager.api.world.WorldDirectory;
-import net.malfact.bgmanager.api.world.WorldManager;
+import net.malfact.bgmanager.BgManager;
+import net.malfact.bgmanager.InstanceManager;
+import net.malfact.bgmanager.api.file.FileDirectory;
+import net.malfact.bgmanager.api.file.world.WorldManager;
 import net.malfact.bgmanager.battleground.BattlegroundBase;
 import net.malfact.bgmanager.battleground.BattlegroundTask;
 import net.malfact.bgmanager.event.BattlegroundLoadEvent;
@@ -100,13 +101,7 @@ public final class BattlegroundManager {
     }
 
     public static void loadBattlegrounds(){
-        File folder = new File(BgManager.getInstance().getDataFolder().getAbsoluteFile() + "/battlegrounds");
-        folder.mkdirs();
-        File[] listOfFiles = folder.listFiles();
-
-        if (listOfFiles == null){
-            return;
-        }
+        File[] listOfFiles = FileDirectory.DATA_BATTLEGROUNDS.getFiles();
 
         for (File file : listOfFiles){
             try {
@@ -142,7 +137,7 @@ public final class BattlegroundManager {
                 BgManager.getInstance().getLogger().log(Level.INFO, "Loaded Battleground <" + bg.getId()
                         + "> from " + bg.getId() + ".dat");
 
-                WorldManager.loadWorld(WorldDirectory.SAVE, bg.getId());
+                WorldManager.loadWorld(FileDirectory.WORLD_SAVE, bg.getId());
 
                 Bukkit.getPluginManager().callEvent(new BattlegroundLoadEvent(bg));
             } catch (IOException e) {

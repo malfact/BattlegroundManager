@@ -2,8 +2,8 @@ package net.malfact.bgmanager.battleground;
 
 import net.malfact.bgmanager.BgManager;
 import net.malfact.bgmanager.ProgressBar;
-import net.malfact.bgmanager.api.world.WorldDirectory;
-import net.malfact.bgmanager.api.world.WorldManager;
+import net.malfact.bgmanager.api.file.FileDirectory;
+import net.malfact.bgmanager.api.file.world.WorldManager;
 import net.malfact.bgmanager.api.battleground.*;
 import net.malfact.bgmanager.api.doodad.Doodad;
 import net.malfact.bgmanager.api.doodad.DoodadInstance;
@@ -77,7 +77,7 @@ public class BattlegroundBaseInstance implements BattlegroundInstance, Listener 
 
         // Load World
         baseBattleground.setDebug(false);
-        world = WorldManager.copyWorld(WorldDirectory.SAVE, battlegroundId, WorldDirectory.INSTANCE, instanceId);
+        world = WorldManager.copyWorld(FileDirectory.WORLD_SAVE, battlegroundId, FileDirectory.WORLD_INSTANCE, instanceId);
         world.setAutoSave(false);
 
         // Instantiate teams

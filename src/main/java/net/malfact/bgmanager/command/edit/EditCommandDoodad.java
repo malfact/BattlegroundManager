@@ -3,7 +3,7 @@ package net.malfact.bgmanager.command.edit;
 import net.malfact.bgmanager.api.battleground.Battleground;
 import net.malfact.bgmanager.api.doodad.Doodad;
 import net.malfact.bgmanager.api.command.SubCommand;
-import net.malfact.bgmanager.BattlegroundManager;
+import net.malfact.bgmanager.api.battleground.BattlegroundManager;
 import net.malfact.bgmanager.api.doodad.DoodadPhysical;
 import net.malfact.bgmanager.api.doodad.DoodadType;
 import net.malfact.bgmanager.util.Util;
