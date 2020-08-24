@@ -2,7 +2,8 @@ package net.malfact.bgmanager.battleground;
 
 import net.malfact.bgmanager.BgManager;
 import net.malfact.bgmanager.ProgressBar;
-import net.malfact.bgmanager.WorldManager;
+import net.malfact.bgmanager.api.world.WorldDirectory;
+import net.malfact.bgmanager.api.world.WorldManager;
 import net.malfact.bgmanager.api.battleground.*;
 import net.malfact.bgmanager.api.doodad.Doodad;
 import net.malfact.bgmanager.api.doodad.DoodadInstance;
@@ -74,6 +75,11 @@ public class BattlegroundBaseInstance implements BattlegroundInstance, Listener 
         // Assigned InstanceId
         this.instanceId = UUID.randomUUID().toString();
 
+        // Load World
+        baseBattleground.setDebug(false);
+        world = WorldManager.copyWorld(WorldDirectory.SAVE, battlegroundId, WorldDirectory.INSTANCE, instanceId);
+        world.setAutoSave(false);
+
         // Instantiate teams
         for(Team team : baseBattleground.teams.values()){
             teams.put(team.getColor(), team.createInstance(this));
@@ -106,11 +112,6 @@ public class BattlegroundBaseInstance implements BattlegroundInstance, Listener 
         timerBar = new ProgressBar("", BarColor.RED, BarStyle.SEGMENTED_20);
 
         setStatus(BattlegroundStatus.INIT);
-
-        baseBattleground.setDebug(false);
-        WorldManager.get().copyWorldFolder(battlegroundId, "Instances/" + battlegroundId + "_" + instanceId);
-        world = WorldManager.get().loadWorld("Instances/" + battlegroundId + "_" + instanceId);
-        world.setAutoSave(false);
 
         BgManager.registerListener(this);
         Bukkit.getPluginManager().callEvent(new InstanceLoadEvent(this));

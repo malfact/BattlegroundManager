@@ -1,7 +1,8 @@
 package net.malfact.bgmanager.battleground;
 
 import net.malfact.bgmanager.BgManager;
-import net.malfact.bgmanager.WorldManager;
+import net.malfact.bgmanager.api.world.WorldDirectory;
+import net.malfact.bgmanager.api.world.WorldManager;
 import net.malfact.bgmanager.api.battleground.Battleground;
 import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import net.malfact.bgmanager.api.battleground.Team;
@@ -23,7 +24,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.logging.Level;
 
 public class BattlegroundBase implements Battleground {
@@ -55,7 +55,7 @@ public class BattlegroundBase implements Battleground {
 
     @Override
     public World getWorld() {
-        return WorldManager.get().getWorld(id);
+        return WorldManager.getWorld(WorldDirectory.SAVE, id);
     }
 
     @Override
@@ -215,7 +215,7 @@ public class BattlegroundBase implements Battleground {
             if (team.getSpawnLocation() != null) {
                 CompoundTag locationTag = new CompoundTag();
 
-                locationTag.putString("world", WorldManager.get().getBaseDirectory() + id);
+                locationTag.putString("world", WorldDirectory.SAVE.getDirectory() + "/" + id);
                 locationTag.putDouble("x", team.getSpawnLocation().getX());
                 locationTag.putDouble("y", team.getSpawnLocation().getY());
                 locationTag.putDouble("z", team.getSpawnLocation().getZ());

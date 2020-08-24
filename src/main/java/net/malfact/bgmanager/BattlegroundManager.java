@@ -1,6 +1,8 @@
 package net.malfact.bgmanager;
 
 import net.malfact.bgmanager.api.battleground.Battleground;
+import net.malfact.bgmanager.api.world.WorldDirectory;
+import net.malfact.bgmanager.api.world.WorldManager;
 import net.malfact.bgmanager.battleground.BattlegroundBase;
 import net.malfact.bgmanager.battleground.BattlegroundTask;
 import net.malfact.bgmanager.event.BattlegroundLoadEvent;
@@ -11,14 +13,11 @@ import net.querz.nbt.io.NamedTag;
 import net.querz.nbt.tag.CompoundTag;
 import net.querz.nbt.tag.Tag;
 import org.bukkit.Bukkit;
-import org.bukkit.event.world.WorldLoadEvent;
-import org.bukkit.event.world.WorldSaveEvent;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.logging.Level;
 
 public final class BattlegroundManager {
@@ -143,7 +142,7 @@ public final class BattlegroundManager {
                 BgManager.getInstance().getLogger().log(Level.INFO, "Loaded Battleground <" + bg.getId()
                         + "> from " + bg.getId() + ".dat");
 
-                WorldManager.get().loadWorld(bg.getId());
+                WorldManager.loadWorld(WorldDirectory.SAVE, bg.getId());
 
                 Bukkit.getPluginManager().callEvent(new BattlegroundLoadEvent(bg));
             } catch (IOException e) {

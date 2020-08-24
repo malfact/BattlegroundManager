@@ -18,6 +18,7 @@ public class DoodadFlagCaptureInstance extends DoodadRadialFieldInstance impleme
 
     // Used to set active state if paired with a DoodadFlagSpawn
     protected final String flagId;
+    protected boolean active = false;
 
     public DoodadFlagCaptureInstance(BattlegroundInstance battlegroundInstance, DoodadFlagCapture doodad) {
         super(battlegroundInstance, doodad);

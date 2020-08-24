@@ -1,5 +1,7 @@
 package net.malfact.bgmanager;
 
+import net.malfact.bgmanager.api.world.WorldDirectory;
+import net.malfact.bgmanager.api.world.WorldManager;
 import net.malfact.bgmanager.command.*;
 import net.malfact.bgmanager.command.edit.CommandEdit;
 import net.malfact.bgmanager.command.edit.EditCommandDoodad;
@@ -41,6 +43,8 @@ public final class BgManager extends JavaPlugin {
         Bukkit.getScheduler().cancelTasks(this);
         BattlegroundManager.unloadBattlegrounds();
         BattlegroundManager.saveBattlegrounds();
+
+        WorldDirectory.INSTANCE.clearDirectory();
     }
 
     public static void registerListener(Listener listener){
