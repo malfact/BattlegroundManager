@@ -1,6 +1,6 @@
 package net.malfact.bgmanager.queue;
 
-import net.malfact.bgmanager.InstanceManager;
+import net.malfact.bgmanager.api.battleground.InstanceManager;
 import net.malfact.bgmanager.api.battleground.Battleground;
 import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import net.malfact.bgmanager.response.ResponseListener;
@@ -40,7 +40,7 @@ public class Queue extends BukkitRunnable implements ResponseListener {
     public void notifyPlayers(int count, String instanceId){
         Iterator<UUID> iterator = members.iterator();
         int index = 0;
-        if (iterator.hasNext() && index <= count){
+        while (iterator.hasNext() && index <= count){
             index++;
 
             UUID playerUUID = iterator.next();
@@ -83,16 +83,16 @@ public class Queue extends BukkitRunnable implements ResponseListener {
             if (members.size() - notified.size() <= 0)
                 break;
 
-            if (instance.getStatus().allowEntry && instance.getPlayerCount() < instance.getMaxPlayerCount()){
-                    notifyPlayers(instance.getMaxPlayerCount() - instance.getPlayerCount(), instance.getInstanceId());
+            if (instance.getStatus().allowEntry && instance.getPlayerCount() < instance.getTeamSize()*2){
+                    notifyPlayers(instance.getTeamSize()*2 - instance.getPlayerCount(), instance.getInstanceId());
             }
         }
 
         int available = members.size() - notified.size();
-        if (available > 0 && available >= battleground.getMinPlayerCount()) {
+        if (available > 0 && available >= battleground.getTeamSize()*2) {
             BattlegroundInstance instance = battleground.createInstance();
             if (InstanceManager.get().registerInstance(battleground.getId(), instance))
-                notifyPlayers(battleground.getMaxPlayerCount(), instance.getInstanceId());
+                notifyPlayers(battleground.getTeamSize(), instance.getInstanceId());
         }
     }
 }

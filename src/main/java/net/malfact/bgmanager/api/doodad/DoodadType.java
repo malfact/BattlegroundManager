@@ -1,6 +1,7 @@
 package net.malfact.bgmanager.api.doodad;
 
 import net.malfact.bgmanager.doodad.*;
+import org.bukkit.Material;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -66,10 +67,16 @@ public class DoodadType {
 
     private final String name;
     private final Class<? extends Doodad> clazz;
+    private final Material displayMaterial;
 
     private DoodadType(String name, Class<? extends Doodad> clazz){
+        this(name, clazz, Material.BARRIER);
+    }
+
+    private DoodadType(String name, Class<? extends Doodad> clazz, Material displayMaterial){
         this.name = name.toUpperCase();
         this.clazz = clazz;
+        this.displayMaterial = displayMaterial;
     }
 
     public String getName() {
@@ -78,5 +85,9 @@ public class DoodadType {
 
     public Class<? extends Doodad> getDoodadClass() {
         return this.clazz;
+    }
+
+    public Material getDisplayMaterial() {
+        return displayMaterial;
     }
 }

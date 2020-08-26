@@ -1,5 +1,6 @@
 package net.malfact.bgmanager.doodad;
 
+import net.malfact.bgmanager.api.ApiGetter;
 import net.malfact.bgmanager.api.battleground.Battleground;
 import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import net.malfact.bgmanager.api.doodad.DoodadInstance;
@@ -25,6 +26,7 @@ public class DoodadGraveyard extends DoodadRadialFieldBase {
         this.respawnTime = respawnTime;
     }
 
+    @ApiGetter("respawnTime")
     public int getRespawnTime() {
         return respawnTime;
     }

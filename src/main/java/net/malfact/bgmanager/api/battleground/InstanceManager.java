@@ -1,8 +1,7 @@
-package net.malfact.bgmanager;
+package net.malfact.bgmanager.api.battleground;
 
-import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import net.malfact.bgmanager.api.file.FileDirectory;
-import net.malfact.bgmanager.api.file.world.WorldManager;
+import net.malfact.bgmanager.api.WorldManager;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -43,7 +42,7 @@ public class InstanceManager {
             return;
 
         BattlegroundInstance instance = instanceRegistry.get(battlegroundId).get(instanceId);
-        instance.destroy();
+        instance.close();
 
         WorldManager.unloadWorld(FileDirectory.WORLD_INSTANCE, instanceId, false);
         WorldManager.deleteWorld(FileDirectory.WORLD_INSTANCE, instanceId);

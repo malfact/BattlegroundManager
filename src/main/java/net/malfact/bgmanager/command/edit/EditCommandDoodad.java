@@ -1,9 +1,10 @@
 package net.malfact.bgmanager.command.edit;
 
+import net.malfact.bgmanager.api.ApiGetter;
 import net.malfact.bgmanager.api.battleground.Battleground;
-import net.malfact.bgmanager.api.doodad.Doodad;
-import net.malfact.bgmanager.api.command.SubCommand;
 import net.malfact.bgmanager.api.battleground.BattlegroundManager;
+import net.malfact.bgmanager.api.command.SubCommand;
+import net.malfact.bgmanager.api.doodad.Doodad;
 import net.malfact.bgmanager.api.doodad.DoodadPhysical;
 import net.malfact.bgmanager.api.doodad.DoodadType;
 import net.malfact.bgmanager.util.Util;
@@ -26,12 +27,33 @@ public class EditCommandDoodad implements SubCommand {
         Battleground battleground = BattlegroundManager.getBattleground(args[0]);
         Player player = (Player) sender;
 
-        if (args.length == 1){
+        if (args.length == 1) {
             battleground.getDoodads().forEach(doodad -> {
                 sender.sendMessage(ChatColor.YELLOW + ">> (" + DoodadType.getByClass(doodad.getClass()).getName() + ")"
                         + doodad.getId());
             });
-        } else if (args.length >= 3) {
+        } else if (args.length == 2) {
+            Doodad doodad = battleground.getDoodad(args[1]);
+            if (doodad == null){
+                sender.sendMessage(ChatColor.RED + args[1] + " is not a valid doodad of " + args[0]);
+                return true;
+            }
+
+            player.sendMessage(ChatColor.AQUA + "<" + doodad.getId() + ">");
+
+            for (Method method : doodad.getClass().getMethods()){
+                if (!method.isAnnotationPresent(ApiGetter.class))
+                    continue;
+
+                ApiGetter apiGetter = method.getAnnotation(ApiGetter.class);
+                try {
+                    player.sendMessage("* " + apiGetter.value() + " = " + method.invoke(doodad));
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        } else {
             switch(args[1].toLowerCase()){
                 case "#create":
                     if (player.getWorld() != battleground.getWorld()){
@@ -132,23 +154,17 @@ public class EditCommandDoodad implements SubCommand {
                         if (method.isAnnotationPresent(EditCommand.class)) {
                             commands.add("#" + method.getAnnotation(EditCommand.class).cmd());
                         }
+
+                        /*if (method.isAnnotationPresent(ApiSetter.class)){
+                            ApiSetter apiSetter = method.getAnnotation(ApiSetter.class);
+                            commands.add("#" + apiSetter.value());
+                        }*/
                     }
 
                     StringUtil.copyPartialMatches(args[2], commands, tabs);
                 }
             }
         }
-//        else if (args.length == 4){
-//            if (args[1].substring(0,1).equalsIgnoreCase("#")) {
-//                Method m = Util.getEditCommand(battleground.getDoodad(args[1]).getClass(), args[2].substring(1));
-//                if (m != null) {
-//                    Class<?>[] classes = m.getAnnotation(EditCommand.class).args();
-//                    if (classes[0].isEnum()){
-//                        Object[] types = classes[0].getEnumConstants();
-//                    }
-//                }
-//            }
-//        }
 
         Collections.sort(tabs);
         return tabs;

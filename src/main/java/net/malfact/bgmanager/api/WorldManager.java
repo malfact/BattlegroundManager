@@ -1,4 +1,4 @@
-package net.malfact.bgmanager.api.file.world;
+package net.malfact.bgmanager.api;
 
 import net.malfact.bgmanager.api.file.FileDirectory;
 import net.malfact.bgmanager.api.file.FileUtil;
@@ -28,6 +28,9 @@ public final class WorldManager {
         world.setGameRule(GameRule.DISABLE_RAIDS, true);
         world.setGameRule(GameRule.KEEP_INVENTORY, true);
         world.setGameRule(GameRule.SHOW_DEATH_MESSAGES, false);
+
+        world.getWorldBorder().setCenter(world.getSpawnLocation());
+        world.getWorldBorder().setSize(500.0);
 
         return world;
     }

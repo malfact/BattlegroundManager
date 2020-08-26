@@ -9,7 +9,7 @@ public enum FileDirectory {
     WORLD_BASE(null, "Battlegrounds"){
         @Override
         public File getDirectory() {
-            return null;
+            return new File(name);
         }
     },
     WORLD_SAVE(WORLD_BASE, "Saves"),
@@ -25,8 +25,8 @@ public enum FileDirectory {
     DATA_BATTLEGROUNDS(DATA_BASE, "battlegrounds"),
     DATA_BATTLEGROUNDS_TEMP(DATA_BASE, "battlegrounds_temp");
 
-    private final FileDirectory parent;
-    private final String name;
+    protected final FileDirectory parent;
+    protected final String name;
 
     FileDirectory(FileDirectory parent, String name){
         this.parent = parent;

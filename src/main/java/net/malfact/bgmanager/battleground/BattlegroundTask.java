@@ -1,6 +1,6 @@
 package net.malfact.bgmanager.battleground;
 
-import net.malfact.bgmanager.InstanceManager;
+import net.malfact.bgmanager.api.battleground.InstanceManager;
 import net.malfact.bgmanager.api.battleground.Battleground;
 import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import net.malfact.bgmanager.api.battleground.BattlegroundStatus;

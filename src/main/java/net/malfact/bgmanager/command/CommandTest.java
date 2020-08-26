@@ -20,11 +20,7 @@ public class CommandTest implements PluginCommand {
             return true;
         }
 
-        if (player.getInventory().getItemInMainHand() != null){
-            player.sendMessage(player.getInventory().getItemInMainHand().toString());
-        }
 
-        //BattlegroundManager.get().saveBattlegrounds();
 
         return true;
     }

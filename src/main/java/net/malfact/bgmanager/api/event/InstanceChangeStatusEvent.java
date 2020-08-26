@@ -1,8 +1,7 @@
-package net.malfact.bgmanager.event;
+package net.malfact.bgmanager.api.event;
 
 import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import net.malfact.bgmanager.api.battleground.BattlegroundStatus;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 public class InstanceChangeStatusEvent extends InstanceEvent {

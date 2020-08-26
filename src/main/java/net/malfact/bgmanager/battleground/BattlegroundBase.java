@@ -1,15 +1,15 @@
 package net.malfact.bgmanager.battleground;
 
 import net.malfact.bgmanager.BgManager;
-import net.malfact.bgmanager.api.file.FileDirectory;
-import net.malfact.bgmanager.api.file.world.WorldManager;
+import net.malfact.bgmanager.api.WorldManager;
 import net.malfact.bgmanager.api.battleground.Battleground;
 import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import net.malfact.bgmanager.api.battleground.Team;
 import net.malfact.bgmanager.api.battleground.TeamColor;
-import net.malfact.bgmanager.command.edit.EditCommand;
 import net.malfact.bgmanager.api.doodad.Doodad;
 import net.malfact.bgmanager.api.doodad.DoodadType;
+import net.malfact.bgmanager.api.file.FileDirectory;
+import net.malfact.bgmanager.command.edit.EditCommand;
 import net.malfact.bgmanager.util.Config;
 import net.querz.nbt.tag.CompoundTag;
 import net.querz.nbt.tag.ListTag;
@@ -26,12 +26,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-public class BattlegroundBase implements Battleground {
+public final class BattlegroundBase implements Battleground {
 
     protected final String id;
     protected String name = "PlaceHolder";
-    protected int minPlayers = 2;
-    protected int maxPlayers = 12;
+    protected int teamSize = 5;
     protected int battleLength = 1500; //1500 seconds = 25 minutes
     protected int winScore = 3;
 
@@ -49,13 +48,13 @@ public class BattlegroundBase implements Battleground {
     }
 
     @Override
-    public String getId() {
-        return id;
+    public World getWorld() {
+        return WorldManager.getWorld(FileDirectory.WORLD_SAVE, id);
     }
 
     @Override
-    public World getWorld() {
-        return WorldManager.getWorld(FileDirectory.WORLD_SAVE, id);
+    public String getId() {
+        return id;
     }
 
     @Override
@@ -69,23 +68,13 @@ public class BattlegroundBase implements Battleground {
     }
 
     @Override
-    public int getMaxPlayerCount() {
-        return maxPlayers;
+    public int getTeamSize() {
+        return teamSize;
     }
 
     @Override
-    public int getMinPlayerCount() {
-        return minPlayers;
-    }
-
-    @Override
-    public void setMaxPlayerCount(int maxPlayers) {
-        this.maxPlayers = maxPlayers;
-    }
-
-    @Override
-    public void setMinPlayerCount(int minPlayers) {
-        this.minPlayers = minPlayers;
+    public void setTeamSize(int size) {
+        this.teamSize = Math.abs(size);
     }
 
     @Override
@@ -203,8 +192,7 @@ public class BattlegroundBase implements Battleground {
         tag.putString("id", id);
         tag.putString("name", name);
         tag.putBoolean("enabled", enabled);
-        tag.putInt("maxPlayers", maxPlayers);
-        tag.putInt("minPlayers", minPlayers);
+        tag.putInt("teamSize", teamSize);
         tag.putInt("battleLength", battleLength);
         tag.putInt("winScore", winScore);
 
@@ -241,12 +229,11 @@ public class BattlegroundBase implements Battleground {
 
     @Override
     public CompoundTag readNBT(CompoundTag tag){
-        name = tag.getString("name");
-        maxPlayers = tag.getInt("maxPlayers");
-        minPlayers = tag.getInt("minPlayers");
-        enabled = tag.getBoolean("enabled");
-        battleLength = tag.getInt("battleLength");
-        winScore = tag.getInt("winScore");
+        setName(            tag.getString("name"));
+        setTeamSize(        tag.getInt("teamSize"));
+        setEnabled(         tag.getBoolean("enabled"));
+        setBattleLength(    tag.getInt("battleLength"));
+        setWinScore(        tag.getInt("winScore"));
 
         CompoundTag teamsTag = tag.getCompoundTag("teams");
 
@@ -347,33 +334,17 @@ public class BattlegroundBase implements Battleground {
         setEnabled(enabled);
     }
 
-    @EditCommand(cmd = "setmaxplayercount")
-    public void setMaxPlayerCount(Player player, String[] args){
+    @EditCommand(cmd = "setTeamSize")
+    public void setTeamSize(Player player, String[] args){
         if (args.length == 0)
             return;
 
         try {
             int value = Integer.parseInt(args[0]);
             player.sendMessage(
-                String.format(Config.BG_CMD_SETMAXPLAYERS, id, value, Config.COMMAND_COLOR, Config.COMMAND_HIGHLIGHT)
+                    String.format(Config.BG_CMD_SET_TEAM_SIZE, id, value, Config.COMMAND_COLOR, Config.COMMAND_HIGHLIGHT)
             );
-            setMaxPlayerCount(value);
-        } catch (NumberFormatException e){
-            player.sendMessage(ChatColor.RED + "Value must be an integer!");
-        }
-    }
-
-    @EditCommand(cmd = "setminplayercount")
-    public void setMinPlayerCount(Player player, String[] args){
-        if (args.length == 0)
-            return;
-
-        try {
-            int value = Integer.parseInt(args[0]);
-            player.sendMessage(
-                    String.format(Config.BG_CMD_SETMINPLAYERS, id, value, Config.COMMAND_COLOR, Config.COMMAND_HIGHLIGHT)
-            );
-            setMinPlayerCount(value);
+            setTeamSize(value);
         } catch (NumberFormatException e){
             player.sendMessage(ChatColor.RED + "Value must be an integer!");
         }
@@ -418,8 +389,7 @@ public class BattlegroundBase implements Battleground {
         player.sendMessage(ChatColor.GOLD+"<Id> = <" + id + ">");
         player.sendMessage(ChatColor.GOLD+"<Enabled> = <" + enabled + ">");
         player.sendMessage(ChatColor.GOLD+"<Name> = <" + name + ">");
-        player.sendMessage(ChatColor.GOLD+"<MinPlayers> = <" + minPlayers + ">");
-        player.sendMessage(ChatColor.GOLD+"<MaxPlayers> = <" + maxPlayers + ">");
+        player.sendMessage(ChatColor.GOLD+"<TeamSize> = <" + teamSize + ">");
         player.sendMessage(ChatColor.GOLD+"<BattleLength> = <" + battleLength + ">");
         player.sendMessage(ChatColor.GOLD+"<WinScore> = <" + winScore + ">");
     }

@@ -1,6 +1,8 @@
 package net.malfact.bgmanager.doodad;
 
 import net.malfact.bgmanager.BgManager;
+import net.malfact.bgmanager.api.ApiGetter;
+import net.malfact.bgmanager.api.ApiSetter;
 import net.malfact.bgmanager.api.battleground.Battleground;
 import net.malfact.bgmanager.api.doodad.DoodadPhysical;
 import net.malfact.bgmanager.command.edit.EditCommand;
@@ -49,6 +51,7 @@ public abstract class DoodadPhysicalBase extends DoodadBase implements DoodadPhy
         return doodadInteractor != null && !doodadInteractor.isDead();
     }
 
+    @ApiSetter("location")
     @Override
     public void setLocation(Location location) {
         location.setWorld(battleground.getWorld());
@@ -63,6 +66,7 @@ public abstract class DoodadPhysicalBase extends DoodadBase implements DoodadPhy
         this.location = location;
     }
 
+    @ApiGetter("location")
     @Override
     public Location getLocation() {
         if (location == null)

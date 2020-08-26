@@ -23,9 +23,7 @@ public class Config {
     // 1: BG Id 2: Enabled/Disabled 3: CMD Color 4: CMD Highlight Color 5: Enabled/Disabled Color
     public static final String BG_CMD_SETENABLED = "%3$sBattleground <%4$s%1$s%3$s> is now <%5$s%2$s%3$s>";
     // 1: BG Id 2: Value 3: CMD Color 4: CMD Highlight color
-    public static final String BG_CMD_SETMAXPLAYERS = "%3$sBattleground <%4$s%1$s%3$s> max players set to <%4$s%2$s%3$s>";
-    // 1: BG Id 2: Value 3: CMD Color 4: CMD Highlight color
-    public static final String BG_CMD_SETMINPLAYERS = "%3$sBattleground <%4$s%1$s%3$s> min players set to <%4$s%2$s%3$s>";
+    public static final String BG_CMD_SET_TEAM_SIZE = "%3$sBattleground %4$s<%1$s>%3$s team size set to %4$s<%2$s>";
 
     public static final Sound BG_READY_SOUND = Sound.BLOCK_BELL_USE;
     public static final float BG_READY_SOUND_VOLUME = 3.0F;

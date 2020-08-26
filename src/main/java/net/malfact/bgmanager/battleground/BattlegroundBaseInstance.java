@@ -2,14 +2,15 @@ package net.malfact.bgmanager.battleground;
 
 import net.malfact.bgmanager.BgManager;
 import net.malfact.bgmanager.ProgressBar;
-import net.malfact.bgmanager.api.file.FileDirectory;
-import net.malfact.bgmanager.api.file.world.WorldManager;
+import net.malfact.bgmanager.api.WorldManager;
 import net.malfact.bgmanager.api.battleground.*;
 import net.malfact.bgmanager.api.doodad.Doodad;
 import net.malfact.bgmanager.api.doodad.DoodadInstance;
+import net.malfact.bgmanager.api.event.InstanceChangeStatusEvent;
+import net.malfact.bgmanager.api.event.InstanceLoadEvent;
+import net.malfact.bgmanager.api.event.PlayerLeaveInstanceEvent;
+import net.malfact.bgmanager.api.file.FileDirectory;
 import net.malfact.bgmanager.doodad.instance.DoodadGraveyardInstance;
-import net.malfact.bgmanager.event.InstanceChangeStatusEvent;
-import net.malfact.bgmanager.event.InstanceLoadEvent;
 import net.malfact.bgmanager.util.Config;
 import org.bukkit.*;
 import org.bukkit.boss.BarColor;
@@ -43,8 +44,7 @@ public class BattlegroundBaseInstance implements BattlegroundInstance, Listener 
     // Variables inherited from Battleground
     protected final String battlegroundId;
     protected final String name;
-    protected final int minPlayers;
-    protected final int maxPlayers;
+    protected final int teamSize;
     protected final int battleLength;
     protected final int winScore;
 
@@ -61,18 +61,18 @@ public class BattlegroundBaseInstance implements BattlegroundInstance, Listener 
     protected ProgressBar timerBar;
 
     private int timer = 0;
+    private int notEnoughPlayersTimer = 0;
 
     protected BattlegroundBaseInstance(BattlegroundBase baseBattleground){
 
         // Assign variables inherited from Battleground;
         this.battlegroundId = baseBattleground.id;
         this.name = baseBattleground.name;
-        this.minPlayers = baseBattleground.minPlayers;
-        this.maxPlayers = baseBattleground.maxPlayers;
+        this.teamSize = baseBattleground.teamSize;
         this.battleLength = baseBattleground.battleLength;
         this.winScore = baseBattleground.winScore;
 
-        // Assigned InstanceId
+        // Assign InstanceId
         this.instanceId = UUID.randomUUID().toString();
 
         // Load World
@@ -147,6 +147,8 @@ public class BattlegroundBaseInstance implements BattlegroundInstance, Listener 
                 playerTeam = teamInstance;
         }
 
+        broadcast(player.getName() + " has joined the battle!", playerTeam.getColor());
+
         playerTeam.addPlayer(player);
 
         PlayerData playerData = new PlayerDataBase(player, playerTeam.getColor());
@@ -184,6 +186,9 @@ public class BattlegroundBaseInstance implements BattlegroundInstance, Listener 
         // Check if player is part of battleground
         if (!isPlayerInBattleground(player))
             return;
+
+        // Call Player Leave Instance Event
+        Bukkit.getPluginManager().callEvent(new PlayerLeaveInstanceEvent(player, this));
 
         PlayerData playerData = this.playerData.get(player.getUniqueId());
         this.playerData.remove(player.getUniqueId());
@@ -251,13 +256,8 @@ public class BattlegroundBaseInstance implements BattlegroundInstance, Listener 
     }
 
     @Override
-    public int getMaxPlayerCount() {
-        return maxPlayers;
-    }
-
-    @Override
-    public int getMinPlayerCount() {
-        return minPlayers;
+    public int getTeamSize() {
+        return teamSize;
     }
 
     @Override
@@ -352,21 +352,25 @@ public class BattlegroundBaseInstance implements BattlegroundInstance, Listener 
     public void close() {
         List<PlayerData> players = new ArrayList<>(playerData.values());
 
+        // Remove players from battleground
         for (PlayerData playerData : players){
             if (playerData.getPlayer() == null)
                 continue;
             removePlayer(playerData.getPlayer());
             playerData.getPlayer().sendMessage(ChatColor.YELLOW + ">> Battleground closed! Teleported to spawn!");
         }
-    }
 
-    @Override
-    public void destroy() {
-        for (DoodadInstance doodad : doodads.values()){
-            doodad.destroy();
+        // Destroy & remove all doodads
+        Iterator<DoodadInstance> iterator = doodads.values().iterator();
+        while (iterator.hasNext()){
+            iterator.next().destroy();
+            iterator.remove();
         }
 
         BgManager.unregisterListener(this);
+
+        WorldManager.unloadWorld(FileDirectory.WORLD_INSTANCE, instanceId, false);
+        WorldManager.deleteWorld(FileDirectory.WORLD_INSTANCE, instanceId);
     }
 
     @Override
@@ -382,7 +386,7 @@ public class BattlegroundBaseInstance implements BattlegroundInstance, Listener 
 
         if (getStatus() == BattlegroundStatus.STARTING){
             if (timer <= 0) {
-                if (getPlayerCount() < minPlayers) {
+                if (getPlayerCount() < teamSize*2) {
                     setStatus(BattlegroundStatus.ENDING);
                     broadcast("Not enough players! Closing Battleground!");
                 } else

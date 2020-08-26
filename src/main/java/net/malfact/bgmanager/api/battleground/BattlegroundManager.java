@@ -1,12 +1,11 @@
 package net.malfact.bgmanager.api.battleground;
 
 import net.malfact.bgmanager.BgManager;
-import net.malfact.bgmanager.InstanceManager;
 import net.malfact.bgmanager.api.file.FileDirectory;
-import net.malfact.bgmanager.api.file.world.WorldManager;
+import net.malfact.bgmanager.api.WorldManager;
 import net.malfact.bgmanager.battleground.BattlegroundBase;
 import net.malfact.bgmanager.battleground.BattlegroundTask;
-import net.malfact.bgmanager.event.BattlegroundLoadEvent;
+import net.malfact.bgmanager.api.event.BattlegroundLoadEvent;
 import net.malfact.bgmanager.queue.QueueManager;
 import net.malfact.bgmanager.util.Config;
 import net.querz.nbt.io.NBTUtil;
@@ -92,6 +91,9 @@ public final class BattlegroundManager {
             for (String instanceId : InstanceManager.get().getInstanceIds(bg.getId())){
                 InstanceManager.get().getInstance(bg.getId(), instanceId).close();
                 InstanceManager.get().deleteInstance(bg.getId(), instanceId);
+
+                WorldManager.unloadWorld(FileDirectory.WORLD_INSTANCE, instanceId, false);
+                WorldManager.deleteWorld(FileDirectory.WORLD_INSTANCE, instanceId);
             }
         }
     }
@@ -161,10 +163,8 @@ public final class BattlegroundManager {
         tag.putString("_type", "battleground");
 
         try {
-            File folder = new File(BgManager.getInstance().getDataFolder().getAbsoluteFile()
-                    + "/battlegrounds");
-            folder.mkdirs();
-            NBTUtil.write(tag,  folder + "/" + battleground.getId() + ".dat");
+            File file = new File(FileDirectory.DATA_BATTLEGROUNDS.getDirectory(), battleground.getId() + ".dat");
+            NBTUtil.write(tag,  file);
 
             BgManager.getInstance().getLogger().log(Level.INFO, "Saved Battleground <" + battleground.getId()
                     + "> to "
@@ -175,8 +175,7 @@ public final class BattlegroundManager {
     }
 
     public static void deleteBattleground(String id){
-        File file = new File(BgManager.getInstance().getDataFolder().getAbsoluteFile() + "/battlegrounds/" + id
-                + ".dat");
+        File file = new File(FileDirectory.DATA_BATTLEGROUNDS.getDirectory(), id + ".dat");
 
         if (file.delete())
             BgManager.getInstance().getLogger().log(Level.INFO, "Deleted Battleground File <" + id + ".dat>!");

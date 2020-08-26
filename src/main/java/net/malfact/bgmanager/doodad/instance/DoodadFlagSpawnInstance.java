@@ -5,11 +5,8 @@ import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import net.malfact.bgmanager.api.battleground.BattlegroundStatus;
 import net.malfact.bgmanager.api.battleground.PlayerData;
 import net.malfact.bgmanager.api.battleground.TeamColor;
+import net.malfact.bgmanager.api.event.*;
 import net.malfact.bgmanager.doodad.DoodadFlagSpawn;
-import net.malfact.bgmanager.event.FlagCaptureEvent;
-import net.malfact.bgmanager.event.FlagDespawnEvent;
-import net.malfact.bgmanager.event.FlagPickupEvent;
-import net.malfact.bgmanager.event.FlagSpawnEvent;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -21,6 +18,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -265,6 +263,28 @@ public class DoodadFlagSpawnInstance extends DoodadPhysicalInstance implements L
                 && (mobileFlagInteractor != null && !mobileFlagInteractor.isDead());
     }
 
+    private void dropFlag(){
+        if (flagHolder == null)
+            return;
+
+
+        instance.broadcast(flagHolder.getTeam().chatColor
+                + flagHolder.getPlayer().getName() + " has dropped the " + teamColor + " Team's flag!");
+
+        Location dropLocation = getFirstSolidBlock(flagHolder.getPlayer().getLocation());
+
+        flagHolder.setFlag(null, "");
+        flagHolder = null;
+        flagCaptured = false;
+        if (dropLocation != null){
+            spawnMobileFlag(dropLocation);
+        } else {
+            instance.broadcast("The " + teamColor.chatColor
+                    + "Team's flag has been returned to it's base!");
+            spawnFlag();
+        }
+    }
+
     @EventHandler
     public void onFlagCapture(FlagCaptureEvent event){
         respawnTimer = respawnTime*20;
@@ -285,21 +305,7 @@ public class DoodadFlagSpawnInstance extends DoodadPhysicalInstance implements L
         if (event.getPlayer().isSneaking()
                 && (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK)){
 
-            instance.broadcast(flagHolder.getTeam().chatColor
-                    + flagHolder.getPlayer().getName() + " has dropped the " + teamColor + " Team's flag!");
-
-            flagHolder.setFlag(null, "");
-            flagHolder = null;
-            flagCaptured = false;
-            Location dropLocation = getFirstSolidBlock(event.getPlayer().getLocation());
-
-            if (dropLocation != null)
-                spawnMobileFlag(dropLocation);
-            else {
-                instance.broadcast("The " + teamColor.chatColor
-                        + "Team's flag has been returned to it's base!");
-                spawnFlag();
-            }
+            dropFlag();
         }
     }
 
@@ -364,24 +370,25 @@ public class DoodadFlagSpawnInstance extends DoodadPhysicalInstance implements L
         if (flagHolder == null || !instance.isPlayerInBattleground(event.getEntity()))
             return;
 
-        PlayerData playerData = instance.getPlayerData(event.getEntity());
+        if (flagHolder.getPlayer() == event.getEntity())
+            dropFlag();
+    }
 
-        if (flagHolder == playerData){
-            instance.broadcast(flagHolder.getTeam().chatColor
-                    + flagHolder.getPlayer().getName() + " has dropped the " + teamColor + " Team's flag!");
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event){
+        if (flagHolder == null || !instance.isPlayerInBattleground(event.getPlayer()))
+            return;
 
-            Location dropLocation = getFirstSolidBlock(flagHolder.getPlayer().getLocation());
+        if (flagHolder.getPlayer() == event.getPlayer())
+            dropFlag();
+    }
 
-            flagHolder.setFlag(null, "");
-            flagHolder = null;
-            flagCaptured = false;
-            if (dropLocation != null){
-                spawnMobileFlag(dropLocation);
-            } else {
-                instance.broadcast("The " + teamColor.chatColor
-                        + "Team's flag has been returned to it's base!");
-                spawnFlag();
-            }
-        }
+    @EventHandler
+    public void onPlayerLeaveInstance(PlayerLeaveInstanceEvent event){
+        if (flagHolder == null || event.getInstance() != instance)
+            return;
+
+        if (flagHolder.getPlayer() == event.getPlayer())
+            dropFlag();
     }
 }

@@ -77,18 +77,11 @@ public interface BattlegroundInstance{
     Location getPlayerSpawnLocation(Player player);
 
     /**
-     * Get maximum number of players for this battleground
+     * Get the team size of this battleground
      *
-     * @return Max players
+     * @return Team Size
      */
-    int getMaxPlayerCount();
-
-    /**
-     * Get minimum number of players for this battleground
-     *
-     * @return Min players
-     */
-    int getMinPlayerCount();
+    int getTeamSize();
 
     /**
      * Get the current status of this battleground instance
@@ -120,14 +113,9 @@ public interface BattlegroundInstance{
     void broadcast(String msg, TeamColor team);
 
     /**
-     * Close this battleground instance and remove all players
+     * Close this battleground instance
      */
     void close();
-
-    /**
-     * Destroy this battleground instance
-     */
-    void destroy();
 
     /**
      * Core gameloop of battleground instance

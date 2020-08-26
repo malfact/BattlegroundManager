@@ -1,9 +1,9 @@
 package net.malfact.bgmanager.doodad;
 
+import net.malfact.bgmanager.api.ApiGetter;
 import net.malfact.bgmanager.api.battleground.Battleground;
 import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import net.malfact.bgmanager.api.doodad.DoodadInstance;
-import net.malfact.bgmanager.api.battleground.TeamColor;
 import net.malfact.bgmanager.command.edit.EditCommand;
 import net.malfact.bgmanager.doodad.instance.DoodadFlagCaptureInstance;
 import net.querz.nbt.tag.CompoundTag;
@@ -22,6 +22,7 @@ public class DoodadFlagCapture extends DoodadRadialFieldBase {
         this.flagId = flagId != null ? flagId : "";
     }
 
+    @ApiGetter("flagId")
     public String getFlagId() {
         return flagId;
     }

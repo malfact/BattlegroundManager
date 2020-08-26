@@ -1,4 +1,4 @@
-package net.malfact.bgmanager.event;
+package net.malfact.bgmanager.api.event;
 
 import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import org.bukkit.event.Event;

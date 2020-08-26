@@ -1,5 +1,6 @@
 package net.malfact.bgmanager.doodad;
 
+import net.malfact.bgmanager.api.ApiGetter;
 import net.malfact.bgmanager.api.battleground.Battleground;
 import net.malfact.bgmanager.api.battleground.TeamColor;
 import net.malfact.bgmanager.api.doodad.DoodadOwnable;
@@ -14,6 +15,7 @@ public abstract class DoodadPhysicalOwnableBase extends DoodadPhysicalBase imple
         super(id, battleground);
     }
 
+    @ApiGetter("teamColor")
     @Override
     public TeamColor getTeamColor(){
         return this.teamColor;
@@ -24,6 +26,7 @@ public abstract class DoodadPhysicalOwnableBase extends DoodadPhysicalBase imple
         this.teamColor = teamColor != null ? teamColor : TeamColor.DEFAULT;
     }
 
+    @ApiGetter("ownerId")
     @Override
     public String getOwnerId() {
         return ownerId;

@@ -1,10 +1,10 @@
-package net.malfact.bgmanager.doodad.instance;
+package net.malfact.bgmanager.doodad;
 
+import net.malfact.bgmanager.api.ApiGetter;
 import net.malfact.bgmanager.api.battleground.Battleground;
 import net.malfact.bgmanager.api.battleground.TeamColor;
 import net.malfact.bgmanager.api.doodad.DoodadOwnable;
 import net.malfact.bgmanager.command.edit.EditCommand;
-import net.malfact.bgmanager.doodad.DoodadBase;
 import net.querz.nbt.tag.CompoundTag;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -18,6 +18,7 @@ public abstract class DoodadOwnableBase extends DoodadBase implements DoodadOwna
         super(id, battleground);
     }
 
+    @ApiGetter("ownerId")
     @Override
     public String getOwnerId() {
         return ownerId;
@@ -28,6 +29,7 @@ public abstract class DoodadOwnableBase extends DoodadBase implements DoodadOwna
         this.ownerId = ownerId != null ? ownerId : "";
     }
 
+    @ApiGetter("teamColor")
     @Override
     public TeamColor getTeamColor() {
         return this.teamColor;

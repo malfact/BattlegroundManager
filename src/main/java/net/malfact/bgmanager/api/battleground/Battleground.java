@@ -28,32 +28,18 @@ public interface Battleground extends NBTContainer {
     void setName(String name);
 
     /**
-     * Get maximum number of players for this battleground
+     * Get the team size of this battleground
      *
-     * @return Max players
+     * @return Size of team
      */
-    int getMaxPlayerCount();
+    int getTeamSize();
 
     /**
-     * Set maximum number of players for this battleground
+     * Set the team size of this battleground
      *
-     * @param maxPlayerCount Amount of players
+     * @param size Size of team
      */
-    void setMaxPlayerCount(int maxPlayerCount);
-
-    /**
-     * Get minimum number of players for this battleground
-     *
-     * @return Min players
-     */
-    int getMinPlayerCount();
-
-    /**
-     * Set minimum number of players for battleground
-     *
-     * @param minPlayerCount Amount of players
-     */
-    void setMinPlayerCount(int minPlayerCount);
+    void setTeamSize(int size);
 
     /**
      * Gets the length of the battle in seconds
@@ -75,7 +61,6 @@ public interface Battleground extends NBTContainer {
      * @return Win score
      */
     int getWinScore();
-
 
     /**
      * Sets the win score of battle

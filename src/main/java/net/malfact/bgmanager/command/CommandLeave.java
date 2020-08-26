@@ -1,6 +1,6 @@
 package net.malfact.bgmanager.command;
 
-import net.malfact.bgmanager.InstanceManager;
+import net.malfact.bgmanager.api.battleground.InstanceManager;
 import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import net.malfact.bgmanager.api.command.PluginCommand;
 import org.bukkit.ChatColor;

@@ -4,7 +4,7 @@ import net.malfact.bgmanager.BgManager;
 import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
 import net.malfact.bgmanager.api.battleground.BattlegroundStatus;
 import net.malfact.bgmanager.doodad.DoodadGate;
-import net.malfact.bgmanager.event.InstanceChangeStatusEvent;
+import net.malfact.bgmanager.api.event.InstanceChangeStatusEvent;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
