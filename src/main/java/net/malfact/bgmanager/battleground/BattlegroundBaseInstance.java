@@ -8,6 +8,7 @@ import net.malfact.bgmanager.api.doodad.Doodad;
 import net.malfact.bgmanager.api.doodad.DoodadInstance;
 import net.malfact.bgmanager.api.event.InstanceChangeStatusEvent;
 import net.malfact.bgmanager.api.event.InstanceLoadEvent;
+import net.malfact.bgmanager.api.event.PlayerJoinInstanceEvent;
 import net.malfact.bgmanager.api.event.PlayerLeaveInstanceEvent;
 import net.malfact.bgmanager.api.file.FileDirectory;
 import net.malfact.bgmanager.doodad.instance.DoodadGraveyardInstance;
@@ -179,6 +180,8 @@ public class BattlegroundBaseInstance implements BattlegroundInstance, Listener 
                 + playerData.getTeam().toString() + " Team!");
 
         player.teleport(playerTeam.getSpawnLocation());
+
+        Bukkit.getPluginManager().callEvent(new PlayerJoinInstanceEvent(player, this));
     }
 
     @Override

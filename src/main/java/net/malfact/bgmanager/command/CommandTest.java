@@ -1,5 +1,9 @@
 package net.malfact.bgmanager.command;
 
+import net.malfact.bgmanager.api.battleground.Battleground;
+import net.malfact.bgmanager.api.battleground.BattlegroundInstance;
+import net.malfact.bgmanager.api.battleground.BattlegroundManager;
+import net.malfact.bgmanager.api.battleground.InstanceManager;
 import net.malfact.bgmanager.api.command.PluginCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -20,7 +24,16 @@ public class CommandTest implements PluginCommand {
             return true;
         }
 
+        if (args.length == 1){
+            Battleground battleground = BattlegroundManager.getBattleground(args[0]);
+            if (battleground == null)
+                return true;
 
+            BattlegroundInstance instance = battleground.createInstance();
+            if (InstanceManager.get().registerInstance(battleground.getId(), instance)){
+                player.sendMessage("Force created new Instance of " + battleground.getId());
+            }
+        }
 
         return true;
     }
