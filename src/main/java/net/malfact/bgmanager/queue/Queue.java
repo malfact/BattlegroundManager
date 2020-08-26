@@ -28,11 +28,11 @@ public class Queue extends BukkitRunnable implements ResponseListener {
     private final LinkedHashSet<UUID> members = new LinkedHashSet<>();
     private final LinkedHashMap<UUID, String> notified = new LinkedHashMap<>();
 
-    public void addPlayer(UUID uuid){
+    protected void addPlayer(UUID uuid){
         members.add(uuid);
     }
 
-    public void removePlayer(UUID uuid){
+    protected void removePlayer(UUID uuid){
         members.remove(uuid);
         notified.remove(uuid);
     }
@@ -66,7 +66,7 @@ public class Queue extends BukkitRunnable implements ResponseListener {
             }
         }
 
-        QueueManager.get().setPlayerQueue(uuid, null);
+        QueueManager.setPlayerQueue(uuid, null);
 
         members.remove(uuid);
         notified.remove(uuid);

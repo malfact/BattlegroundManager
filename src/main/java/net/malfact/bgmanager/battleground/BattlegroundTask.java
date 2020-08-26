@@ -15,7 +15,7 @@ public class BattlegroundTask extends BukkitRunnable {
 
     public BattlegroundTask(Battleground battleground){
         this.battleground = battleground;
-        this.queue = QueueManager.get().getQueue(battleground.getId());
+        this.queue = QueueManager.getQueue(battleground.getId());
     }
 
     @Override

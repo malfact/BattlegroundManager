@@ -44,7 +44,7 @@ public class DoodadFlagCaptureInstance extends DoodadRadialFieldInstance impleme
 
         if (active) {
             for (PlayerData playerData : instance.getPlayerData()){
-                if (playerData.getPlayer().getLocation().distance(location) <= radius){
+                if (isPlayerInRadius(playerData.getPlayer())){
                     if (playerData.hasFlag() && playerData.getFlagColor() != teamColor && playerData.getTeam() == teamColor){
                         instance.broadcast(playerData.getTeam().chatColor
                                 + playerData.getPlayer().getDisplayName() + " has captured the "

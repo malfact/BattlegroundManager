@@ -176,10 +176,10 @@ public class BattlegroundBaseInstance implements BattlegroundInstance, Listener 
         }
         player.setGameMode(GameMode.SURVIVAL);
 
-        player.sendMessage(ChatColor.GOLD + ">>" + playerTeam.getColor().chatColor + " You are on the "
-                + playerData.getTeam().toString() + " Team!");
-
         player.teleport(playerTeam.getSpawnLocation());
+
+        player.sendMessage(playerTeam.getColor().chatColor + ">> You are on the " + playerData.getTeam().toString() + " Team!");
+        player.sendTitle(playerTeam.getColor().chatColor + "You are on the " + playerData.getTeam().toString() + " team!", "", 10, 70, 20);
 
         Bukkit.getPluginManager().callEvent(new PlayerJoinInstanceEvent(player, this));
     }
@@ -214,6 +214,9 @@ public class BattlegroundBaseInstance implements BattlegroundInstance, Listener 
 
         // Teleport to Main World spawn location
         player.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
+
+        if (this.playerData.size() <= 0)
+            close();
     }
 
     @Override
@@ -389,11 +392,8 @@ public class BattlegroundBaseInstance implements BattlegroundInstance, Listener 
 
         if (getStatus() == BattlegroundStatus.STARTING){
             if (timer <= 0) {
-                if (getPlayerCount() < teamSize*2) {
-                    setStatus(BattlegroundStatus.ENDING);
-                    broadcast("Not enough players! Closing Battleground!");
-                } else
-                    setStatus(BattlegroundStatus.IN_PROGRESS);
+                notEnoughPlayersTimer = 6000;
+                setStatus(BattlegroundStatus.IN_PROGRESS);
             }
         }
 
@@ -402,7 +402,14 @@ public class BattlegroundBaseInstance implements BattlegroundInstance, Listener 
             sb.getScore(ChatColor.RED + "Red Team").setScore(teams.get(TeamColor.RED).getScore());
             sb.getScore(ChatColor.BLUE + "Blue Team").setScore(teams.get(TeamColor.BLUE).getScore());
 
-            if (timer <= 0
+            if (playerData.size() < teamSize*2){
+                if (notEnoughPlayersTimer%1200 == 0)
+                    broadcast("Not enough players! Battle ending in " + notEnoughPlayersTimer/1200 + " minutes.");
+                notEnoughPlayersTimer--;
+            } else
+                notEnoughPlayersTimer = 6000;
+
+            if (timer <= 0 || notEnoughPlayersTimer <= 0
                     || teams.get(TeamColor.RED).getScore() >=  winScore
                     || teams.get(TeamColor.BLUE).getScore() >= winScore){
 

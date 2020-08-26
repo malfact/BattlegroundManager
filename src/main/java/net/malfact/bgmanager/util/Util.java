@@ -61,7 +61,7 @@ public class Util {
         player.spigot().sendMessage(message02);
         player.playSound(player.getLocation(), Config.BG_READY_SOUND, Config.BG_READY_SOUND_VOLUME, Config.BG_READY_SOUND_PITCH);
 
-        ResponseManager.get().registerResponseListener(player.getUniqueId(), QueueManager.get().getQueue(id));
+        ResponseManager.get().registerResponseListener(player.getUniqueId(), QueueManager.getQueue(id));
     }
 
     public static Object parseString(String str){

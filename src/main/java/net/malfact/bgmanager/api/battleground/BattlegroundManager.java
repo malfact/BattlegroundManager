@@ -33,7 +33,7 @@ public final class BattlegroundManager {
         }
 
         battlegroundRegistry.put(battleground.getId(), battleground);
-        QueueManager.get().registerQueue(battleground.getId());
+        QueueManager.registerQueue(battleground.getId());
 
         BattlegroundTask task = new BattlegroundTask(battleground);
         Bukkit.getScheduler().scheduleSyncRepeatingTask(BgManager.getInstance(), (Runnable) task, 0L, 1L);
@@ -47,7 +47,7 @@ public final class BattlegroundManager {
 
     public static void unregisterBattleground(String id){
         if (battlegroundRegistry.remove(id) != null){
-            QueueManager.get().unregisterQueue(id);
+            QueueManager.unregisterQueue(id);
             try {
                 battlegroundTaskRegistry.get(id).cancel();
             } catch(IllegalStateException ignored){ }

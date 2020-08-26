@@ -229,11 +229,11 @@ public final class BattlegroundBase implements Battleground {
 
     @Override
     public CompoundTag readNBT(CompoundTag tag){
-        setName(            tag.getString("name"));
-        setTeamSize(        tag.getInt("teamSize"));
-        setEnabled(         tag.getBoolean("enabled"));
-        setBattleLength(    tag.getInt("battleLength"));
-        setWinScore(        tag.getInt("winScore"));
+        this.name = tag.getString("name");
+        this.teamSize = tag.getInt("teamSize");
+        this.enabled = tag.getBoolean("enabled");
+        this.battleLength = tag.getInt("battleLength");
+        this.winScore = tag.getInt("winScore");
 
         CompoundTag teamsTag = tag.getCompoundTag("teams");
 
